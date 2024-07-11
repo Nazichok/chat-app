@@ -27,7 +27,8 @@
     "paths": {
       "@services/*": ["src/app/services/*"],
       "@components/*": ["src/app/components/*"],
-    }
+    },
+    "typeRoots": ["node_modules/primeng"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

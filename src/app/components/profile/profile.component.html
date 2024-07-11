@@ -1,1 +1,15 @@
-<p>profile works!</p>
+@if (currentUser) {
+<div class="container">
+  <header class="jumbotron">
+    <h3>
+      <strong>{{ currentUser.username }}</strong> Profile
+    </h3>
+  </header>
+  <p>
+    <strong>Email:</strong>
+    {{ currentUser.email }}
+  </p>
+</div>
+} @else {
+<p>Please login.</p>
+}
