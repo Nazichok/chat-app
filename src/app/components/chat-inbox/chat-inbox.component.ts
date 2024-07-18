@@ -5,7 +5,7 @@ import { ChatService } from '@services/chat-service/chat.service';
 @Component({
   selector: 'app-chat-inbox',
   templateUrl: './chat-inbox.component.html',
-  styleUrls: ['./chat-inbox.component.scss'],
+  styleUrl: './chat-inbox.component.scss',
   standalone: true,
   imports: [
     FormsModule,

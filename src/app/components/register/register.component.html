@@ -1,0 +1,43 @@
+<div class="container flex justify-center items-center">
+  <p-card class="w-full md:w-1/3">
+    @if (!isSuccessful) {
+    <form
+      [formGroup]="signUpForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <div class="mb-1">
+        <label for="username" class="block">Username</label>
+        <input
+          type="text"
+          pInputText
+          placeholder="Username"
+          formControlName="username"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-1">
+        <label for="email" class="block">Email</label>
+        <input
+          type="text"
+          pInputText
+          placeholder="Email"
+          formControlName="email"
+          class="w-full"
+        />
+      </div>
+      <div class="mb-1">
+        <label for="password" class="block">Password</label>
+        <p-password formControlName="password" [toggleMask]="true" class="block w-full [&_input]:w-full [&>div]:w-full"/>
+      </div>
+
+      <p-button
+        type="submit"
+        label="Submit"
+        [disabled]="signUpForm.invalid"
+      ></p-button>
+    </form>
+  } @else {
+    <p-messages [value]="[{ severity: 'success', summary: 'Success', detail: 'Your registration is successful!'}]" [closable]="false"></p-messages>
+  }
+  </p-card>
+</div>
