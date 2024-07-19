@@ -14,6 +14,7 @@ import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
+import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +50,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.storageService.user$.subscribe((user) => {
       if (user) {
-        this.router.navigate(['/user']);
+        this.router.navigate([APP_ROUTES.CHATS]);
       }
     })
   }

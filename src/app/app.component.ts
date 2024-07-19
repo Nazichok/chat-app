@@ -5,6 +5,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 import { EventBusService } from '@services/bus-service.service';
+import { APP_ROUTES } from './app.routes';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent {
   isLoggedIn = false;
   username?: string;
   eventBusSub?: Subscription;
+  routes = APP_ROUTES;
 
   constructor(
     private storageService: StorageService,

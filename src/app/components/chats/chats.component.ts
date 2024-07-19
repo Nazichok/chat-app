@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { StorageService } from '@services/storage.service/storage.service';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  imports: [RouterOutlet],
+  templateUrl: './chats.component.html',
+  styleUrl: './chats.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class ChatsComponent implements OnInit {
   content?: string;
 
   constructor(
@@ -21,7 +22,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.storageService.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate([APP_ROUTES.LOGIN]);
     } else {
       this.userService.getPublicContent().subscribe({
         next: (data) => {

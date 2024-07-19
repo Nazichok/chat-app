@@ -4,35 +4,24 @@
     <a routerLink="/"
       ><img src="/assets/logo.png" class="w-16 h-auto mr-5"
     /></a>
-    @if (isLoggedIn) {
-    <ul class="mr-auto flex items-center gap-2" routerLinkActive="active">
-      <li>
-        <a class="nav-link" routerLink="/home">Home</a>
-      </li>
-      @if (isLoggedIn) {
-      <li>
-        <a class="nav-link" routerLink="/user">User</a>
-      </li>
-      }
-    </ul>
-    } @if (!isLoggedIn) {
-    <ul class="flex items-center gap-2 ml-auto">
-      <li>
-        <a class="nav-link" routerLink="/register">Sign Up</a>
-      </li>
-      <li>
-        <a class="nav-link" routerLink="/login">Login</a>
-      </li>
-    </ul>
+    @if (!isLoggedIn) {
+      <ul class="flex items-center gap-2 ml-auto">
+        <li>
+          <a class="nav-link" [routerLink]="routes.REGISTER">Sign Up</a>
+        </li>
+        <li>
+          <a class="nav-link" [routerLink]="routes.LOGIN">Login</a>
+        </li>
+      </ul>
     } @else {
-    <ul class="flex items-center gap-2 ml-auto">
-      <li>
-        <a class="nav-link" routerLink="/profile">{{ username }}</a>
-      </li>
-      <li>
-        <a href class="nav-link" (click)="logout()">LogOut</a>
-      </li>
-    </ul>
+      <ul class="flex items-center gap-2 ml-auto">
+        <li>
+          <a class="nav-link" [routerLink]="routes.PROFILE">{{ username }}</a>
+        </li>
+        <li>
+          <a href class="nav-link" (click)="logout()">LogOut</a>
+        </li>
+      </ul>
     }
   </nav>
 
