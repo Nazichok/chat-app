@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { StorageService } from '../../services/storage.service';
+import { AuthService } from '../../services/auth.service/auth.service';
+import { StorageService } from '../../services/storage.service/storage.service';
 import {
   FormBuilder,
   FormGroup,
@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
     InputTextModule,
     PasswordModule,
     MessagesModule,
-    ButtonModule
+    ButtonModule,
   ],
   styleUrl: './login.component.scss',
 })
@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
-  username = '';
 
   constructor(
     private authService: AuthService,
@@ -48,10 +47,11 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.storageService.isLoggedIn()) {
-      this.isLoggedIn = true;
-      this.username = this.storageService.getUser().username;
-    }
+    this.storageService.user$.subscribe((user) => {
+      if (user) {
+        this.router.navigate(['/user']);
+      }
+    })
   }
 
   onSubmit(): void {
@@ -60,11 +60,8 @@ export class LoginComponent implements OnInit {
     this.authService.login(username, password).subscribe({
       next: (data) => {
         this.storageService.saveUser(data);
-
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-        this.username = this.storageService.getUser().username;
-        this.router.navigate(['/user']);
       },
       error: (err) => {
         this.errorMessage = err.error.message;

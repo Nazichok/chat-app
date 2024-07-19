@@ -9,8 +9,8 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EventBusService, EventData } from '@services/bus-service.service';
-import { StorageService } from '../services/storage.service';
-import { AuthService } from '../services/auth.service';
+import { StorageService } from '../services/storage.service/storage.service';
+import { AuthService } from '../services/auth.service/auth.service';
 import { inject } from '@angular/core';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -29,7 +29,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (storageService.isLoggedIn()) {
         return authService.refreshToken().pipe(
           switchMap((value) => {
-            debugger;
             authService.isRefreshing = false;
             storageService.saveUser({
               ...storageService.getUser(),
@@ -42,10 +41,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           catchError((error) => {
             authService.isRefreshing = false;
 
-            if (error.status == '403') {
-              eventBusService.emit(
-                new EventData('logout', null)
-              );
+            if (error.status === 403) {
+              eventBusService.emit(new EventData('logout', null));
             }
 
             return throwError(() => error);
@@ -65,6 +62,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         error.status === 401
       ) {
         return handle401Error(req, next);
+      }
+
+      if (error instanceof HttpErrorResponse && error.status === 403) {
+        eventBusService.emit(new EventData('logout', null));
       }
 
       return throwError(() => error);

@@ -20,15 +20,12 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["ES2022", "dom"],
     "paths": {
       "@services/*": ["src/app/services/*"],
-      "@components/*": ["src/app/components/*"],
+      "@components/*": ["src/app/components/*"]
     },
-    "typeRoots": ["node_modules/primeng"]
+    "typeRoots": ["node_modules/@types", "node_modules/primeng"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

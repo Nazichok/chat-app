@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { StorageService } from './services/storage.service';
-import { AuthService } from './services/auth.service';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { StorageService } from './services/storage.service/storage.service';
+import { AuthService } from './services/auth.service/auth.service';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 import { EventBusService } from '@services/bus-service.service';
@@ -22,16 +22,22 @@ export class AppComponent {
   constructor(
     private storageService: StorageService,
     private authService: AuthService,
-    private eventBusService: EventBusService
+    private eventBusService: EventBusService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = this.storageService.isLoggedIn();
+    this.storageService.initUser();
 
-    if (this.isLoggedIn) {
-      const user = this.storageService.getUser();
-      this.username = user.username;
-    }
+    this.storageService.user$.subscribe((user) => {
+      if (user) {
+        this.isLoggedIn = true;
+        this.username = user.username;
+      } else {
+        this.isLoggedIn = false;
+        this.username = '';
+      }
+    });
 
     this.eventBusSub = this.eventBusService.on('logout', () => {
       this.logout();
@@ -40,13 +46,9 @@ export class AppComponent {
 
   logout(): void {
     this.authService.logout().subscribe({
-      next: (res) => {
+      next: () => {
         this.storageService.clean();
-
-        window.location.reload();
-      },
-      error: (err) => {
-        console.log(err);
+        this.router.navigate(['/login']);
       },
     });
   }
