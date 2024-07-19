@@ -50,7 +50,7 @@ export class AppComponent {
     this.authService.logout().subscribe({
       next: () => {
         this.storageService.clean();
-        this.router.navigate(['/login']);
+        this.router.navigate([APP_ROUTES.LOGIN]);
       },
     });
   }

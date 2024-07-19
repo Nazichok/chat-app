@@ -4,20 +4,28 @@ import { ChatsComponent } from '@components/chats/chats.component';
 import { LoginComponent } from '@components/login/login.component';
 import { ProfileComponent } from '@components/profile/profile.component';
 import { RegisterComponent } from '@components/register/register.component';
+import { authGuard } from './guards/auth.guard';
 
 export const APP_ROUTES = {
   CHATS: 'chats',
   LOGIN: 'login',
   REGISTER: 'register',
-  PROFILE: 'profile'
-}
+  PROFILE: 'profile',
+};
 
 export const routes: Routes = [
-  { path: APP_ROUTES.CHATS, component: ChatsComponent, children: [
-    { path: ':id', component: ChatComponent }
-  ] },
+  {
+    path: APP_ROUTES.CHATS,
+    component: ChatsComponent,
+    canActivate: [authGuard],
+    children: [{ path: ':id', component: ChatComponent }],
+  },
   { path: APP_ROUTES.LOGIN, component: LoginComponent },
   { path: APP_ROUTES.REGISTER, component: RegisterComponent },
-  { path: APP_ROUTES.PROFILE, component: ProfileComponent },
-  { path: '', redirectTo: APP_ROUTES.CHATS, pathMatch: 'full' }
+  {
+    path: APP_ROUTES.PROFILE,
+    component: ProfileComponent,
+    canActivate: [authGuard],
+  },
+  { path: '', redirectTo: APP_ROUTES.CHATS, pathMatch: 'full' },
 ];
