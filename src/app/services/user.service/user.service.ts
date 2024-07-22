@@ -16,7 +16,7 @@ export type User = UserInterface | null;
 @Injectable({
   providedIn: 'root',
 })
-export class StorageService {
+export class UserService {
   constructor() {}
   private _user = new BehaviorSubject<User>(null);
   user$ = this._user.asObservable();

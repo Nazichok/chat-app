@@ -9,13 +9,13 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EventBusService, EventData } from '@services/bus-service.service';
-import { StorageService } from '../services/storage.service/storage.service';
+import { UserService } from '../services/user.service/user.service';
 import { AuthService } from '../services/auth.service/auth.service';
 import { inject } from '@angular/core';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const storageService = inject(StorageService);
+  const storageService = inject(UserService);
   const eventBusService = inject(EventBusService);
 
   const authReq = (req = req.clone({

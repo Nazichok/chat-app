@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service/auth.service';
-import { StorageService } from '../../services/storage.service/storage.service';
+import { UserService } from '../../services/user.service/user.service';
 import {
   FormBuilder,
   FormGroup,
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storageService: StorageService,
+    private storageService: UserService,
     private fb: FormBuilder,
     private router: Router
   ) {}

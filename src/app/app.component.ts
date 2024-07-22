@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StorageService } from './services/storage.service/storage.service';
+import { UserService } from './services/user.service/user.service';
 import { AuthService } from './services/auth.service/auth.service';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
@@ -22,7 +22,7 @@ export class AppComponent {
   routes = APP_ROUTES;
 
   constructor(
-    private storageService: StorageService,
+    private storageService: UserService,
     private authService: AuthService,
     private eventBusService: EventBusService,
     private router: Router

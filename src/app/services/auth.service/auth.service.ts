@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StorageService } from '../storage.service/storage.service';
+import { UserService } from '../user.service/user.service';
 import { serverUrl } from '../../config';
 
 const AUTH_API = `${serverUrl}/api/auth/`;
@@ -19,7 +19,7 @@ export interface RefreshTokenResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private storageService: StorageService) {}
+  constructor(private http: HttpClient, private storageService: UserService) {}
   isRefreshing = false;
 
   login(username: string, password: string): Observable<any> {

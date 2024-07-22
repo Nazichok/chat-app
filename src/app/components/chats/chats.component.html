@@ -1,6 +1,48 @@
-<div class="container">
-  <header class="jumbotron">
-    <p>{{ content }}</p>
-  </header>
+<div class="flex">
+  <div
+    class="grow shrink-0 basis-[330px] min-w-0 px-3 border-x border-x-gray-300"
+  >
+    <h2>Chats</h2>
+    <ul>
+      <li *ngFor="let chat of chats" class="mb-4">
+        <p-card
+          class="[&_.p-card-content]:p-0 hover:[&_.p-card]:bg-slate-100 cursor-pointer"
+          [ngClass]="
+            {
+              '[&_.p-card]:bg-slate-200': currentChatId === chat.id,
+              'hover:[&_.p-card]:bg-slate-200': currentChatId === chat.id
+            }
+          "
+          [routerLink]="[chat.id]"
+        >
+          <div class="flex justify-between items-center gap-4">
+            <img
+              src="{{ chat.user.img }}"
+              alt="Profile for {{ chat.user.name }}"
+              class="w-12 h-12 rounded-full"
+            />
+            <div class="overflow-hidden flex-1">
+              <h3>{{ chat.user.name }}</h3>
+              <div class="flex items-center gap-2">
+                <span
+                  class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-500 min-w-0"
+                  title="{{ chat.messages.slice(-1)[0].text }}"
+                >
+                  {{ chat.messages.slice(-1)[0].text }}
+                </span>
+                @if (!!chat.unreadCount) {
+                <p-badge [value]="chat.unreadCount" />
+                }
+              </div>
+            </div>
+            <span>{{ chat.messages.slice(-1)[0].date| dateAgo }}</span>
+            @if (showMessageBtn) {
+              <span class="text-[--primary-color] font-medium">Message</span>
+            }
+          </div>
+        </p-card>
+      </li>
+    </ul>
+  </div>
   <router-outlet></router-outlet>
 </div>

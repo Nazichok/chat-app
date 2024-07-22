@@ -5,11 +5,8 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from '@services/auth.service/auth.service';
-import { EventBusService, EventData } from '@services/bus-service.service';
-import { StorageService } from '@services/storage.service/storage.service';
 import { MessageService } from 'primeng/api';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
 export const errorInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
