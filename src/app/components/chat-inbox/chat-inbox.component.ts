@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ChatService } from '@services/chat-service/chat.service';
 
 @Component({
@@ -9,7 +9,6 @@ import { ChatService } from '@services/chat-service/chat.service';
   standalone: true,
   imports: [
     FormsModule,
-    ReactiveFormsModule
   ]
 })
 export class ChatInboxComponent implements OnInit {

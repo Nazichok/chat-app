@@ -1,22 +1,59 @@
 @if (chat$ | async; as chat) {
-  <div class="bg-slate-50 p-3 flex items-center gap-2">
-    <p-button
-      icon="pi pi-arrow-left"
-      [rounded]="true"
-      [text]="true"
-      severity="secondary"
-    />
-    <img
-      src="{{ chat.user.img }}"
-      alt="Profile for {{ chat.user.name }}"
-      class="w-12 h-12 rounded-full"
-    />
-    <div>
-      <h2>{{ chat.user.name }}</h2>
-      <span>{{ (chat.user.isOnline && "Online") || (chat.user.lastSeen | dateAgo) }}</span>
-    </div>
-    <p-button icon="pi pi-ellipsis-v" class="ml-auto" [rounded]="true" [text]="true" severity="secondary" />
+<div class="bg-slate-50 p-3 flex items-center gap-2 border-b border-gray-300">
+  <p-button
+    icon="pi pi-arrow-left"
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+    [routerLink]="['/' + routes.CHATS]"
+  />
+  <img
+    src="{{ chat.user.img }}"
+    alt="Profile for {{ chat.user.name }}"
+    class="w-12 h-12 rounded-full"
+  />
+  <div>
+    <h2>{{ chat.user.name }}</h2>
+    <span>{{
+      (chat.user.isOnline && "Online") || (chat.user.lastSeen | dateAgo)
+    }}</span>
   </div>
-  <p-button label="Close" [routerLink]="['/' + routes.CHATS]" />
-
+  <p-button
+    icon="pi pi-ellipsis-v"
+    class="ml-auto"
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+  />
+</div>
+<div class="flex-1 overflow-auto bg-slate-100">
+  <ul class="p-3 w-full">
+    <li
+      *ngFor="let message of chat.messages"
+      class="flex gap-2 mb-3"
+      [ngClass]="message.sender === userId ? 'justify-end' : 'justify-start'"
+    >
+      <div
+        class="p-3 rounded-3xl max-w-[75%]"
+        [ngClass]="
+          message.sender === userId ? 'bg-sky-500 text-white rounded-ee-none' : 'bg-slate-200 rounded-ss-none'
+        "
+      >
+        {{ message.text }}
+      </div>
+      @if (message.sender === userId) {
+        <i class="pi self-end" [ngClass]="message.isRead ? 'pi-check-circle' : 'pi-check'" style="font-size: 0.7rem;"></i>
+      }
+    </li>
+  </ul>
+</div>
+<div class="p-3 bg-slate-200">
+  <textarea
+    class="w-full rounded-3xl"
+    rows="1"
+    pInputTextarea
+    [(ngModel)]="message"
+    (keydown.enter)="sendMessage($event)"
+  ></textarea>
+</div>
 }

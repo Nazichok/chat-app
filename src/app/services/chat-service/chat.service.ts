@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 import { serverUrl } from 'src/app/config';
 
 export interface Message {
@@ -48,7 +48,7 @@ const mockedChats: Chat[] = [
         id: '2',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '2',
+        sender: '6687bc7555937a16ad434301',
         isRead: true,
         chatId: '1',
       },
@@ -56,7 +56,7 @@ const mockedChats: Chat[] = [
         id: '3',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '3',
+        sender: '1',
         isRead: true,
         chatId: '1',
       },
@@ -76,7 +76,7 @@ const mockedChats: Chat[] = [
         id: '4',
         text: 'Hello',
         date: new Date(),
-        sender: '4',
+        sender: '2',
         isRead: true,
         chatId: '2',
       },
@@ -84,7 +84,7 @@ const mockedChats: Chat[] = [
         id: '5',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '5',
+        sender: '6687bc7555937a16ad434301',
         isRead: true,
         chatId: '2',
       },
@@ -92,7 +92,7 @@ const mockedChats: Chat[] = [
         id: '6',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '6',
+        sender: '2',
         isRead: false,
         chatId: '2',
       },
@@ -112,7 +112,7 @@ const mockedChats: Chat[] = [
         id: '7',
         text: 'Hello',
         date: new Date(),
-        sender: '7',
+        sender: '3',
         isRead: true,
         chatId: '3',
       },
@@ -120,7 +120,7 @@ const mockedChats: Chat[] = [
         id: '8',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '8',
+        sender: '6687bc7555937a16ad434301',
         isRead: true,
         chatId: '3',
       },
@@ -128,7 +128,39 @@ const mockedChats: Chat[] = [
         id: '9',
         text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
         date: new Date(),
-        sender: '9',
+        sender: '3',
+        isRead: true,
+        chatId: '3',
+      },
+      {
+        id: '10',
+        text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
+        date: new Date(),
+        sender: '6687bc7555937a16ad434301',
+        isRead: true,
+        chatId: '3',
+      },
+      {
+        id: '11',
+        text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
+        date: new Date(),
+        sender: '3',
+        isRead: true,
+        chatId: '3',
+      },
+      {
+        id: '12',
+        text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
+        date: new Date(),
+        sender: '6687bc7555937a16ad434301',
+        isRead: true,
+        chatId: '3',
+      },
+      {
+        id: '13',
+        text: 'Hello, how are you? I am fine. What about you? I am also fine. How are you? I am fine. What about you? I am also fine.',
+        date: new Date(),
+        sender: '3',
         isRead: true,
         chatId: '3',
       },
@@ -142,15 +174,16 @@ const mockedChats: Chat[] = [
   providedIn: 'root',
 })
 export class ChatService {
-
   public message$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // todo: implement chat service
   private _chats: BehaviorSubject<Chat[]> = new BehaviorSubject(mockedChats);
-  private _chatMap: BehaviorSubject<Record<string, Chat>> = new BehaviorSubject(mockedChats.reduce((acc, chat) => {
-    acc[chat.id] = chat;
-    return acc;
-  }, {} as Record<string, Chat>));
+  private _chatMap: BehaviorSubject<Record<string, Chat>> = new BehaviorSubject(
+    mockedChats.reduce((acc, chat) => {
+      acc[chat.id] = chat;
+      return acc;
+    }, {} as Record<string, Chat>)
+  );
 
   public get chats$(): Observable<Chat[]> {
     return this._chats.asObservable();
@@ -165,7 +198,7 @@ export class ChatService {
   socket = io(serverUrl);
 
   public sendMessage(message: any) {
-    console.log('sendMessage: ', message)
+    console.log('sendMessage: ', message);
     this.socket.emit('message', message);
   }
 
