@@ -16,10 +16,10 @@
     } @else {
       <ul class="flex items-center gap-2 ml-auto">
         <li>
-          <a class="nav-link" [routerLink]="routes.PROFILE">{{ username }}</a>
+          <p-button severity="secondary" class="nav-link" [routerLink]="routes.PROFILE" label="{{username}}"></p-button>
         </li>
         <li>
-          <a href class="nav-link" (click)="logout()">LogOut</a>
+          <p-button severity="secondary" class="nav-link" (click)="logout()">LogOut</p-button>
         </li>
       </ul>
     }

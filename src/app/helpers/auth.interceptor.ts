@@ -26,19 +26,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (storageService.isLoggedIn()) {
         return authService.refreshToken().pipe(
-          switchMap((value) => {
+          switchMap(() => {
             authService.isRefreshing = false;
-            storageService.saveUser({
-              ...storageService.getUser(),
-              accessToken: value.accessToken,
-              refreshToken: value.refreshToken,
-            });
-
             return next(request);
           }),
           catchError((error) => {
             authService.isRefreshing = false;
-
             if (error.status === 403) {
               eventBusService.emit(new EventData('logout', null));
             }

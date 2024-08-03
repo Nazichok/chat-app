@@ -1,3 +1,5 @@
+import { Utilities } from './tailwind-theme/utilities';
+
 export default {
   content: ["./src/**/*.{html,ts}"],
   theme: {
@@ -14,5 +16,5 @@ export default {
 
     },
   },
-  plugins: [],
+  plugins: [Utilities],
 };

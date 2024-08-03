@@ -15,6 +15,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
+import { getHttpErrorMsg } from 'src/app/helpers/utils';
 
 @Component({
   selector: 'app-login',
@@ -65,7 +66,7 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
       },
       error: (err) => {
-        this.errorMessage = err.error.message;
+        this.errorMessage = getHttpErrorMsg(err);
         this.isLoginFailed = true;
       },
     });

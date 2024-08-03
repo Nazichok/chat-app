@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ContentService } from '../../services/content.service';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -13,19 +12,32 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { BadgeModule } from 'primeng/badge';
-import { filter, map } from 'rxjs';
-import { Chat, ChatService } from '@services/chat-service/chat.service';
+import { filter, finalize, map } from 'rxjs';
+import { Chat, ChatService, User } from '@services/chat-service/chat.service';
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+} from 'primeng/autocomplete';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarLetterPipe } from 'src/app/pipes/avatar-letter.pipe';
 
 @Component({
   selector: 'app-chats',
   standalone: true,
   imports: [
+    AutoCompleteModule,
+    AvatarModule,
     CommonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     RouterLink,
     RouterOutlet,
     BadgeModule,
     ButtonModule,
     CardModule,
+    AvatarLetterPipe,
     DateAgoPipe,
   ],
   templateUrl: './chats.component.html',
@@ -37,30 +49,19 @@ export class ChatsComponent implements OnInit {
   routes = APP_ROUTES;
   showMessageBtn = true;
   currentChatId?: string;
+  suggestions: User[] = [];
+  searchLoading = false;
 
   constructor(
-    private contentService: ContentService,
     private activeRoute: ActivatedRoute,
     private router: Router,
     private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
-    this.contentService.getPublicContent().subscribe({
-      next: (data) => {
-        this.content = data;
-      },
-      error: (err) => {
-        if (err.error) {
-          this.content = JSON.parse(err.error).message;
-        } else {
-          this.content = 'Error with status: ' + err.status;
-        }
-      },
-    });
-
     this.chatService.chats$.subscribe((chats) => {
       this.chats = chats;
+      this.suggestions = chats?.map((c) => c.user || {}) || [];
     });
 
     this.showMessageBtn = !this.activeRoute.snapshot.firstChild;
@@ -76,5 +77,20 @@ export class ChatsComponent implements OnInit {
         this.showMessageBtn = !route;
         this.currentChatId = route?.snapshot.params[ROUTE_PARAMS.CHAT_ID];
       });
+  }
+
+  selectChat({ value }: { value: User }) {
+    this.chatService.selectChat(value);
+  }
+
+  searchUsers(event: AutoCompleteCompleteEvent) {
+    this.searchLoading = true;
+    this.chatService
+      .searchUsers(event.query)
+      .pipe(finalize(() => (this.searchLoading = false)))
+      .subscribe((users) => {
+        this.suggestions = users;
+      });
+    this.suggestions = [...this.suggestions];
   }
 }

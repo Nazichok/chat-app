@@ -2,44 +2,77 @@
   <div
     class="grow shrink-0 basis-[330px] min-w-0 px-3 border-x border-x-gray-300"
   >
-    <h2>Chats</h2>
+    <div class="relative">
+      <p-autoComplete
+        (onSelect)="selectChat($event)"
+        [suggestions]="suggestions"
+        (completeMethod)="searchUsers($event)"
+        optionLabel="name"
+        field="username"
+        class="block p-fluid mb-3 [&_input]:pr-9"
+        placeholder="Search"
+      >
+        <ng-template let-user pTemplate="item">
+          <div class="flex items-center gap-2">
+            <p-avatar image="{{ user.img }}" size="normal" shape="circle" />
+            <div>{{ user?.username }}</div>
+          </div>
+        </ng-template>
+      </p-autoComplete>
+      <i
+        class="pi absolute top-4 right-4 text-gray-400"
+        [ngClass]="searchLoading ? 'pi-spin pi-spinner' : 'pi-search'"
+      ></i>
+    </div>
     <ul>
       <li *ngFor="let chat of chats" class="mb-4">
         <p-card
           class="[&_.p-card-content]:p-0 hover:[&_.p-card]:bg-slate-100 cursor-pointer"
-          [ngClass]="
-            {
-              '[&_.p-card]:bg-slate-200': currentChatId === chat.id,
-              'hover:[&_.p-card]:bg-slate-200': currentChatId === chat.id
-            }
-          "
-          [routerLink]="[chat.id]"
+          [ngClass]="{
+            '[&_.p-card]:bg-slate-200': currentChatId === chat._id,
+            'hover:[&_.p-card]:bg-slate-200': currentChatId === chat._id,
+          }"
+          [routerLink]="[chat._id]"
         >
-          <div class="flex justify-between items-center gap-4">
-            <img
-              src="{{ chat.user.img }}"
-              alt="Profile for {{ chat.user.name }}"
-              class="w-12 h-12 rounded-full"
-            />
-            <div class="overflow-hidden flex-1">
-              <h3>{{ chat.user.name }}</h3>
-              <div class="flex items-center gap-2">
-                <span
-                  class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-500 min-w-0"
-                  title="{{ chat.messages.slice(-1)[0].text }}"
-                >
-                  {{ chat.messages.slice(-1)[0].text }}
-                </span>
-                @if (!!chat.unreadCount) {
-                <p-badge [value]="chat.unreadCount" />
-                }
+          @if (chat.user) {
+            <div class="flex justify-between items-center gap-4">
+              @if (chat.user.img) {
+                <p-avatar
+                  image="{{ chat.user.img }}"
+                  size="large"
+                  shape="circle"
+                />
+              } @else {
+                <p-avatar
+                  label="{{ chat.user.username | avatarLetter }}"
+                  size="large"
+                  shape="circle"
+                />
+              }
+              <div class="overflow-hidden flex-1">
+                <h3>{{ chat.user.username }}</h3>
+                <div class="flex items-center gap-2">
+                  @if (chat.lastMessage) {
+                    <span
+                      class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-500 min-w-0"
+                      title="{{ chat.lastMessage.text }}"
+                    >
+                      {{ chat.lastMessage.text }}
+                    </span>
+                  }
+                  @if (!!chat.unreadCount) {
+                    <p-badge [value]="chat.unreadCount" />
+                  }
+                </div>
               </div>
+              @if (chat.lastMessage) {
+                <span>{{ chat.lastMessage.date | dateAgo }}</span>
+              }
+              @if (showMessageBtn) {
+                <span class="text-[--primary-color] font-medium">Message</span>
+              }
             </div>
-            <span>{{ chat.messages.slice(-1)[0].date| dateAgo }}</span>
-            @if (showMessageBtn) {
-              <span class="text-[--primary-color] font-medium">Message</span>
-            }
-          </div>
+          }
         </p-card>
       </li>
     </ul>

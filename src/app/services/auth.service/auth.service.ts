@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UserService } from '../user.service/user.service';
 import { serverUrl } from '../../config';
 
-const AUTH_API = `${serverUrl}/api/auth/`;
+const AUTH_API = `${serverUrl}/api/auth`;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -24,7 +24,7 @@ export class AuthService {
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(
-      AUTH_API + 'signin',
+      AUTH_API + '/signin',
       {
         username,
         password,
@@ -35,7 +35,7 @@ export class AuthService {
 
   register(username: string, email: string, password: string): Observable<any> {
     return this.http.post(
-      AUTH_API + 'signup',
+      AUTH_API + '/signup',
       {
         username,
         email,
@@ -46,12 +46,11 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    const userId = this.storageService.getUser()!.id;
-    return this.http.post(AUTH_API + 'signout', { userId }, httpOptions);
+    const userId = this.storageService.getUser()!._id;
+    return this.http.post(AUTH_API + '/signout', { userId }, httpOptions);
   }
 
   refreshToken() {
-    const refreshToken = this.storageService.getUser()!.refreshToken;
-    return this.http.post<RefreshTokenResponse>(AUTH_API + 'refreshtoken', { refreshToken }, httpOptions);
+    return this.http.post<RefreshTokenResponse>(AUTH_API + '/refreshtoken', null, httpOptions);
   }
 }

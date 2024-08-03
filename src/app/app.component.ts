@@ -6,11 +6,12 @@ import { ToastModule } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 import { EventBusService } from '@services/bus-service.service';
 import { APP_ROUTES } from './app.routes';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, RouterOutlet, ToastModule],
+  imports: [ButtonModule, RouterModule, RouterOutlet, ToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

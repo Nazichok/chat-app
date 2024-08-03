@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, pairwise } from 'rxjs';
+import socket from 'src/app/socket';
 
 const USER_KEY = 'auth-user';
 
 export interface UserInterface {
   accessToken: string;
   email: string;
-  id: string;
+  _id: string;
   refreshToken: string;
   username: string;
 }
@@ -17,7 +18,15 @@ export type User = UserInterface | null;
   providedIn: 'root',
 })
 export class UserService {
-  constructor() {}
+  constructor() {
+    this._user.pipe(pairwise()).subscribe((users) => {
+      if (!users[0] && users[1]) {
+        console.log(users);
+        socket.auth = { userId: users[1]._id };
+        socket.connect();
+      }
+    })
+  }
   private _user = new BehaviorSubject<User>(null);
   user$ = this._user.asObservable();
 
