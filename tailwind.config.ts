@@ -1,3 +1,6 @@
+import { Config } from 'tailwindcss/types/config';
+import { Utilities } from './tailwind-theme/utilities';
+
 export default {
   content: ["./src/**/*.{html,ts}"],
   theme: {
@@ -14,5 +17,5 @@ export default {
 
     },
   },
-  plugins: [],
-};
+  plugins: [Utilities],
+} as Config;

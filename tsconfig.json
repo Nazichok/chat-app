@@ -21,11 +21,11 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
+    "strictPropertyInitialization": false,
     "paths": {
       "@services/*": ["src/app/services/*"],
       "@components/*": ["src/app/components/*"]
     },
-    "typeRoots": ["node_modules/@types", "node_modules/primeng"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
