@@ -1,0 +1,6 @@
+<p>{{ message.text }}</p>
+<span
+  class="text-sm float-end"
+  [ngClass]="message.sender === userId ? 'text-slate-200' : 'text-slate-500'"
+  >{{ message.date | dateAgo }}</span
+>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService, User } from '../../services/storage.service/storage.service';
+import { UserService, User } from '../../services/user.service/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -11,7 +11,7 @@ import { StorageService, User } from '../../services/storage.service/storage.ser
 export class ProfileComponent implements OnInit {
   currentUser: User = null;
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: UserService) {}
 
   ngOnInit(): void {
     this.storageService.user$.subscribe((user) => {

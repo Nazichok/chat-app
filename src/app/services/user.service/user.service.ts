@@ -6,7 +6,7 @@ const USER_KEY = 'auth-user';
 export interface UserInterface {
   accessToken: string;
   email: string;
-  id: string;
+  _id: string;
   refreshToken: string;
   username: string;
 }
@@ -16,10 +16,27 @@ export type User = UserInterface | null;
 @Injectable({
   providedIn: 'root',
 })
-export class StorageService {
-  constructor() {}
+export class UserService {
   private _user = new BehaviorSubject<User>(null);
+  private _isOnline = new BehaviorSubject<boolean>(false);
   user$ = this._user.asObservable();
+  isOnline$ = this._isOnline.asObservable();
+
+  public get user(): User {
+    return this._user.value;
+  }
+
+  public get isOnline(): boolean {
+    return this._isOnline.value;
+  }
+
+  public set isOnline(newIsOnline: boolean) {
+    this._isOnline.next(newIsOnline);
+  }
+
+  public get isLoggedIn(): boolean {
+    return !!this.user;
+  }
 
   clean(): void {
     this._user.next(null);
@@ -38,13 +55,5 @@ export class StorageService {
     window.localStorage.removeItem(USER_KEY);
     window.localStorage.setItem(USER_KEY, JSON.stringify(user));
     this._user.next(user);
-  }
-
-  public getUser(): User {
-    return this._user.getValue();
-  }
-
-  public isLoggedIn(): boolean {
-    return !!this._user.getValue();
   }
 }

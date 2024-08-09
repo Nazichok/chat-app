@@ -13,12 +13,22 @@ export const APP_ROUTES = {
   PROFILE: 'profile',
 };
 
+export const ROUTE_PARAMS = {
+  CHAT_ID: 'chatId',
+};
+
 export const routes: Routes = [
   {
     path: APP_ROUTES.CHATS,
     component: ChatsComponent,
     canActivate: [authGuard],
-    children: [{ path: ':id', component: ChatComponent }],
+    canActivateChild: [authGuard],
+    children: [
+      {
+        path: `:${ROUTE_PARAMS.CHAT_ID}`,
+        component: ChatComponent,
+      },
+    ],
   },
   { path: APP_ROUTES.LOGIN, component: LoginComponent },
   { path: APP_ROUTES.REGISTER, component: RegisterComponent },

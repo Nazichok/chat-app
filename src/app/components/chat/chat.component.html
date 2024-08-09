@@ -1,1 +1,73 @@
-<p>chat works!</p>
+@if (chat) {
+  <div class="bg-slate-50 p-3 flex items-center gap-2 border-b border-gray-300">
+    @if (chat.user) {
+      <p-button
+        icon="pi pi-arrow-left"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        [routerLink]="['/' + routes.CHATS]"
+      />
+      @if (chat.user.img) {
+        <p-avatar image="{{ chat.user.img }}" size="large" shape="circle" />
+      } @else {
+        <p-avatar
+          label="{{ chat.user.username | avatarLetter }}"
+          size="large"
+          shape="circle"
+        />
+      }
+      <div>
+        <h2>{{ chat.user.username }}</h2>
+        <span>{{
+          (chat.user.isOnline && "Online") ||
+            (chat.user.lastSeen && (chat.user.lastSeen | dateAgo))
+        }}</span>
+      </div>
+      <p-button
+        icon="pi pi-ellipsis-v"
+        class="ml-auto"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+      />
+    }
+  </div>
+  <div #messagesContainer class="flex-1 overflow-auto bg-indigo-100">
+    <ul class="p-3 w-full">
+      <li
+        *ngFor="let message of messages"
+        class="flex gap-2 mb-3"
+        [ngClass]="message.sender === userId ? 'justify-end' : 'justify-start'"
+      >
+        <app-message
+          class="relative p-3 rounded-3xl max-w-[75%] min-w-20"
+          [ngClass]="
+            message.sender === userId
+              ? 'bg-indigo-500 text-white rounded-ee-none'
+              : 'bg-slate-100 rounded-ss-none'
+          "
+          [message]="message"
+          [userId]="userId"
+        ></app-message>
+        @if (message.sender === userId) {
+          <i
+            class="pi self-end"
+            [ngClass]="message.isRead ? 'pi-check-circle' : 'pi-check'"
+            style="font-size: 0.7rem"
+          ></i>
+        }
+      </li>
+    </ul>
+  </div>
+  <div class="p-3 bg-slate-200">
+    <textarea
+      resizeTextArea
+      class="w-full rounded-xl min-h-20"
+      rows="1"
+      pInputTextarea
+      [(ngModel)]="message"
+      (keyup.enter)="sendMessage($event)"
+    ></textarea>
+  </div>
+}

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service/auth.service';
-import { StorageService } from '../../services/storage.service/storage.service';
+import { UserService } from '../../services/user.service/user.service';
 import {
   FormBuilder,
   FormGroup,
@@ -15,6 +15,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
+import { getHttpErrorMsg } from 'src/app/helpers/utils';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storageService: StorageService,
+    private storageService: UserService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -65,7 +66,7 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
       },
       error: (err) => {
-        this.errorMessage = err.error.message;
+        this.errorMessage = getHttpErrorMsg(err);
         this.isLoginFailed = true;
       },
     });
