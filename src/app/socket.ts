@@ -6,7 +6,6 @@ export enum SocketEvents {
   USER_DISCONNECTED = 'user disconnected',
   PRIVATE_MESSAGE = 'private message',
   USER_IDS = 'userIds',
-  SESSION = 'session',
   CONNECT_ERROR = 'connect error',
   CONNECTION = 'connection',
   DISCONNECT = 'disconnect',
@@ -16,7 +15,6 @@ export enum SocketEvents {
 declare module 'socket.io-client' {
   interface Socket {
     userId?: string;
-    sessionId?: string;
   }
 }
 

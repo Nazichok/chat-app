@@ -13,7 +13,7 @@ import { ChatService } from '@services/chat-service/chat.service';
 import { MessagesService } from '@services/messages.service/messages.service';
 import { AsyncPipe } from '@angular/common';
 
-const { SESSION, CONNECT_ERROR } = SocketEvents;
+const { CONNECT_ERROR } = SocketEvents;
 
 @Component({
   selector: 'app-root',
@@ -64,16 +64,8 @@ export class AppComponent implements OnInit, OnDestroy {
       // connect on login or page refresh (initUser)
       if (user) {
         const userId = user._id;
-        const sessionId = localStorage.getItem('socketSessionId');
-        socket.auth = { userId, sessionId };
+        socket.auth = { userId };
         socket.connect();
-
-        socket.on(SESSION, ({ sessionId, userId }) => {
-          socket.auth = { sessionId };
-          socket.userId = userId;
-          localStorage.setItem('socketSessionId', sessionId);
-          this.userService.isOnline = true;
-        });
 
         socket.on(CONNECT_ERROR, (err) => {
           if (err.message === 'User error') {
