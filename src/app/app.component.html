@@ -4,6 +4,11 @@
     <a routerLink="/"
       ><img src="/assets/logo.png" class="w-16 h-auto mr-5"
     /></a>
+    @if (isOnline$ | async) {
+      Online
+    } @else {
+      Offline
+    }
     @if (!isLoggedIn) {
       <ul class="flex items-center gap-2 ml-auto">
         <li>

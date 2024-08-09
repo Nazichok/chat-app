@@ -4,6 +4,5 @@
     "**/.editorconfig": true,
     "**/.gitignore": true,
     "**/.prettierrc": true,
-    "**/*.json": true
   }
 }

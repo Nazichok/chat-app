@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    const userId = this.storageService.getUser()!._id;
+    const userId = this.storageService.user!._id;
     return this.http.post(AUTH_API + '/signout', { userId }, httpOptions);
   }
 

@@ -20,7 +20,8 @@
       <div>
         <h2>{{ chat.user.username }}</h2>
         <span>{{
-          (chat.user.isOnline && "Online") || (chat.user.lastSeen | dateAgo)
+          (chat.user.isOnline && "Online") ||
+            (chat.user.lastSeen && (chat.user.lastSeen | dateAgo))
         }}</span>
       </div>
       <p-button
@@ -32,30 +33,23 @@
       />
     }
   </div>
-  <div class="flex-1 overflow-auto bg-indigo-100">
+  <div #messagesContainer class="flex-1 overflow-auto bg-indigo-100">
     <ul class="p-3 w-full">
       <li
         *ngFor="let message of messages"
         class="flex gap-2 mb-3"
         [ngClass]="message.sender === userId ? 'justify-end' : 'justify-start'"
       >
-        <div
-          class="relative p-3 rounded-3xl max-w-[75%]"
+        <app-message
+          class="relative p-3 rounded-3xl max-w-[75%] min-w-20"
           [ngClass]="
             message.sender === userId
               ? 'bg-indigo-500 text-white rounded-ee-none'
               : 'bg-slate-100 rounded-ss-none'
           "
-        >
-          <p>{{ message.text }}</p>
-          <span
-            class="text-sm float-end"
-            [ngClass]="
-              message.sender === userId ? 'text-slate-200' : 'text-slate-500'
-            "
-            >{{ message.date | dateAgo }}</span
-          >
-        </div>
+          [message]="message"
+          [userId]="userId"
+        ></app-message>
         @if (message.sender === userId) {
           <i
             class="pi self-end"
@@ -68,11 +62,12 @@
   </div>
   <div class="p-3 bg-slate-200">
     <textarea
-      class="w-full rounded-3xl"
+      resizeTextArea
+      class="w-full rounded-xl min-h-20"
       rows="1"
       pInputTextarea
       [(ngModel)]="message"
-      (keydown.enter)="sendMessage($event)"
+      (keyup.enter)="sendMessage($event)"
     ></textarea>
   </div>
 }

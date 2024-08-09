@@ -5,8 +5,6 @@ import { LoginComponent } from '@components/login/login.component';
 import { ProfileComponent } from '@components/profile/profile.component';
 import { RegisterComponent } from '@components/register/register.component';
 import { authGuard } from './guards/auth.guard';
-import { chatResolver } from './resolvers/chat.resolver';
-import { chatsResolver } from './resolvers/chats.resolver';
 
 export const APP_ROUTES = {
   CHATS: 'chats',
@@ -25,16 +23,10 @@ export const routes: Routes = [
     component: ChatsComponent,
     canActivate: [authGuard],
     canActivateChild: [authGuard],
-    resolve: {
-      chats: chatsResolver,
-    },
     children: [
       {
         path: `:${ROUTE_PARAMS.CHAT_ID}`,
         component: ChatComponent,
-        resolve: {
-          chatData: chatResolver,
-        },
       },
     ],
   },

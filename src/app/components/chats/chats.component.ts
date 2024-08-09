@@ -47,7 +47,7 @@ export class ChatsComponent implements OnInit {
   content?: string;
   chats: Chat[] = [];
   routes = APP_ROUTES;
-  showMessageBtn = true;
+  chatOpened = true;
   currentChatId?: string;
   suggestions: User[] = [];
   searchLoading = false;
@@ -64,7 +64,7 @@ export class ChatsComponent implements OnInit {
       this.suggestions = chats?.map((c) => c.user || {}) || [];
     });
 
-    this.showMessageBtn = !this.activeRoute.snapshot.firstChild;
+    this.chatOpened = !this.activeRoute.snapshot.firstChild;
     this.currentChatId =
       this.activeRoute.firstChild?.snapshot.params[ROUTE_PARAMS.CHAT_ID];
 
@@ -74,7 +74,7 @@ export class ChatsComponent implements OnInit {
         map(() => this.activeRoute?.firstChild)
       )
       .subscribe((route) => {
-        this.showMessageBtn = !route;
+        this.chatOpened = !route;
         this.currentChatId = route?.snapshot.params[ROUTE_PARAMS.CHAT_ID];
       });
   }

@@ -1,40 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Message } from '@services/messages.service/messages.service';
+import { UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 import { serverUrl } from 'src/app/config';
+import socket, { SocketEvents } from 'src/app/socket';
 
-export interface Message {
-  _id: string;
-  text: string;
-  date: Date;
-  sender: string;
-  isRead: boolean;
-  chatId: string;
-}
+const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, CONNECT, DISCONNECT } = SocketEvents;
 
 export interface User {
   _id: string;
   username: string;
   img: string;
-  lastSeen: Date;
+  lastSeen?: Date;
   isOnline?: boolean;
 }
-
-const usersMock: User[] = [{
-  _id: '1',
-  username: 'John Doe',
-  img: 'https://picsum.photos/200/300',
-  lastSeen: new Date(),
-  isOnline: true,
-}, {
-  _id: '6687bc7555937a16ad434301',
-  username: 'Jane Doe',
-  img: 'https://picsum.photos/200/300',
-  lastSeen: new Date(),
-  isOnline: false,
-}];
 
 export interface Chat {
   user: User;
@@ -50,22 +32,93 @@ const USERS_API_URL = `${serverUrl}/api/users`;
   providedIn: 'root',
 })
 export class ChatService {
-  public message$: BehaviorSubject<string> = new BehaviorSubject('');
-  private _chats: BehaviorSubject<Chat[]> = new BehaviorSubject([] as Chat[]);
+  private _chats: BehaviorSubject<Chat[]>;
+  private _usersOnline: BehaviorSubject<string[]>;
 
   public get chats$(): Observable<Chat[]> {
     return this._chats.asObservable();
   }
 
+  private get chats(): Chat[] {
+    return this._chats.value;
+  }
+
+  private set chats(newChats: Chat[]) {
+    this._chats.next(newChats);
+  }
+
+  private set usersOnline(newUsersOnline: string[]) {
+    this._usersOnline.next(newUsersOnline);
+  }
+
+  private get usersOnline(): string[] {
+    return this._usersOnline.value;
+  }
+
+  private addUserOnline(userId: string) {
+    const newUsersOnline = [...this.usersOnline, userId];
+    this.usersOnline = [...new Set(newUsersOnline)];
+  }
+
+  private removeUserOnline(userId: string) {
+    this.usersOnline = this.usersOnline.filter((user) => user !== userId);
+  }
+
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) {}
+    private userService: UserService
+  ) {
+    this._chats = new BehaviorSubject([] as Chat[]);
+    this._usersOnline = new BehaviorSubject([] as string[]);
+
+    socket.on(USER_IDS, (userIds) => {
+      console.log('userIds', userIds);
+      this.usersOnline = userIds;
+      this.chats = this.chats.map((chat) => {
+        chat.user.isOnline = userIds.includes(chat.user._id);
+        return chat;
+      });
+    });
+
+    socket.on(USER_CONNECTED, (userId) => {
+      this.addUserOnline(userId);
+      this.chats = this.chats.map((chat) => {
+        if (chat.user._id === userId) {
+          chat.user.isOnline = true;
+        }
+        return chat;
+      });
+    });
+
+    socket.on(USER_DISCONNECTED, (userId) => {
+      this.removeUserOnline(userId);
+      this.chats = this.chats.map((chat) => {
+        if (chat.user._id === userId) {
+          chat.user.isOnline = false;
+        }
+        return chat;
+      });
+    });
+
+    socket.on(CONNECT, () => {
+      this.userService.isOnline = true;
+    });
+
+    socket.on(DISCONNECT, () => {
+      this.userService.isOnline = false;
+    });
+  }
 
   public getChats(): Observable<Chat[]> {
-    return this.fetchChats().pipe(tap((chats) => {
-      this._chats.next(chats);
-    }));
+    return this.fetchChats().pipe(
+      tap((chats) => {
+        this.chats = chats.map((chat) => {
+          chat.user.isOnline = this.usersOnline.includes(chat.user._id);
+          return chat;
+        });
+      }),
+    );
   }
 
   public fetchChats(): Observable<Chat[]> {
@@ -78,10 +131,19 @@ export class ChatService {
       this.createChat(user).subscribe((chat) => {
         this._chats.next([...this._chats.value, chat]);
         this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
-      })
+      });
     } else {
       this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
     }
+  }
+
+  public newMessage(message: Message) {
+    this.chats = this.chats.map((chat) => {
+      if (chat._id === message.chatId) {
+        chat.lastMessage = message;
+      }
+      return chat;
+    }).sort((a, b) => new Date(b.lastMessage.date).getTime() - new Date(a.lastMessage.date).getTime());
   }
 
   public createChat(user: User): Observable<Chat> {

@@ -24,7 +24,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     if (!authService.isRefreshing) {
       authService.isRefreshing = true;
 
-      if (storageService.isLoggedIn()) {
+      if (storageService.isLoggedIn) {
         return authService.refreshToken().pipe(
           switchMap(() => {
             authService.isRefreshing = false;

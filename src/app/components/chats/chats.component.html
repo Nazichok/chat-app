@@ -1,6 +1,7 @@
 <div class="flex">
   <div
     class="grow shrink-0 basis-[330px] min-w-0 px-3 border-x border-x-gray-300"
+    [ngClass]="{ 'hidden md:block': !chatOpened }"
   >
     <div class="relative">
       <p-autoComplete
@@ -50,7 +51,11 @@
                 />
               }
               <div class="overflow-hidden flex-1">
-                <h3>{{ chat.user.username }}</h3>
+                <h3>{{ chat.user.username }}
+                  @if (chat.user.isOnline) {
+                    &nbsp;<i class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"></i>
+                  }
+                </h3>
                 <div class="flex items-center gap-2">
                   @if (chat.lastMessage) {
                     <span
@@ -68,7 +73,7 @@
               @if (chat.lastMessage) {
                 <span>{{ chat.lastMessage.date | dateAgo }}</span>
               }
-              @if (showMessageBtn) {
+              @if (chatOpened) {
                 <span class="text-[--primary-color] font-medium">Message</span>
               }
             </div>
