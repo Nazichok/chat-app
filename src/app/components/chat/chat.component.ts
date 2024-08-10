@@ -63,10 +63,6 @@ export class ChatComponent implements OnInit {
       this.chat = chats.find((c) => c._id === this.chatId) || ({} as Chat);
       if (messagesMap[this.chatId]) {
         this.messages = messagesMap[this.chatId];
-        // TODO make it in human way
-        setTimeout(() => {
-          this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
-        }, 500);
       }
     });
 

@@ -33,31 +33,44 @@
       />
     }
   </div>
-  <div #messagesContainer class="flex-1 overflow-auto bg-indigo-100">
+  <div #messagesContainer class="flex-1 overflow-auto pr-3 bg-indigo-100">
     <ul class="p-3 w-full">
-      <li
-        *ngFor="let message of messages"
-        class="flex gap-2 mb-3"
-        [ngClass]="message.sender === userId ? 'justify-end' : 'justify-start'"
-      >
-        <app-message
-          class="relative p-3 rounded-3xl max-w-[75%] min-w-20"
+      @for (message of messages; track message._id) {
+        <li
+          class="flex gap-2 mb-3"
           [ngClass]="
-            message.sender === userId
-              ? 'bg-indigo-500 text-white rounded-ee-none'
-              : 'bg-slate-100 rounded-ss-none'
+            message.sender === userId ? 'justify-end' : 'justify-start'
           "
-          [message]="message"
-          [userId]="userId"
-        ></app-message>
-        @if (message.sender === userId) {
-          <i
-            class="pi self-end"
-            [ngClass]="message.isRead ? 'pi-check-circle' : 'pi-check'"
-            style="font-size: 0.7rem"
-          ></i>
-        }
-      </li>
+        >
+          @defer (on viewport) {
+            <app-message
+              class="relative p-3 rounded-3xl max-w-[75%] min-w-20"
+              [ngClass]="
+                message.sender === userId
+                  ? 'bg-indigo-500 text-white rounded-ee-none'
+                  : 'bg-slate-100 rounded-ss-none'
+              "
+              [message]="message"
+              [userId]="userId"
+            ></app-message>
+          } @placeholder {
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 animate-pulse"
+            ></div>
+          }
+          @if (message.sender === userId) {
+            <i
+              class="pi self-end"
+              [ngClass]="message.isRead ? 'pi-check-circle' : 'pi-check'"
+              style="font-size: 0.7rem"
+            ></i>
+          }
+        </li>
+      } @empty {
+        <h2 class="mt-8 text-xl text-center">
+          Nothing here yet. Send message to start conversation.
+        </h2>
+      }
     </ul>
   </div>
   <div class="p-3 bg-slate-200">

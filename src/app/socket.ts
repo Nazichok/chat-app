@@ -10,6 +10,7 @@ export enum SocketEvents {
   CONNECTION = 'connection',
   DISCONNECT = 'disconnect',
   CONNECT = 'connect',
+  MESSAGE_READ = 'message read'
 };
 
 declare module 'socket.io-client' {

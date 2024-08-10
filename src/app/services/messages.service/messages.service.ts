@@ -6,12 +6,12 @@ import { BehaviorSubject, tap } from 'rxjs';
 import { serverUrl } from 'src/app/config';
 import socket, { SocketEvents } from 'src/app/socket';
 
-const { PRIVATE_MESSAGE } = SocketEvents;
+const { PRIVATE_MESSAGE, MESSAGE_READ } = SocketEvents;
 
 export interface Message {
   _id: string;
   text: string;
-  date: Date;
+  date: number;
   sender: string;
   isRead: boolean;
   chatId: string;
@@ -35,6 +35,12 @@ export class MessagesService {
       ...this._messagesMap.value,
       [chatId]: messages,
     });
+    this.chatService.updateUnreadCount(
+      chatId,
+      messages.filter(
+        (m) => m.sender !== this.userService.user?._id && !m.isRead,
+      ).length,
+    );
   }
 
   constructor(
@@ -44,9 +50,41 @@ export class MessagesService {
   ) {
     socket.on(PRIVATE_MESSAGE, (message: Message) => {
       const messages = this.messagesMap[message.chatId] || [];
-      this.updateMap(message.chatId, messages.concat(message));
+      this.updateMap(
+        message.chatId,
+        messages.filter((m) => m.date !== message.date).concat(message),
+      );
       this.chatService.newMessage(message);
     });
+
+    socket.on(MESSAGE_READ, ({ chatId, messageId }) => {
+      this.updateMap(
+        chatId,
+        this.messagesMap[chatId].map((message) => {
+          if (message._id === messageId) {
+            return { ...message, isRead: true };
+          }
+          return message;
+        }),
+      );
+    });
+  }
+
+  public messageRead(message: Message) {
+    socket.emit(MESSAGE_READ, {
+      chatId: message.chatId,
+      messageId: message._id,
+      anotherUserId: message.sender,
+    });
+    this.updateMap(
+      message.chatId,
+      this.messagesMap[message.chatId].map((m) => {
+        if (m._id === message._id) {
+          return { ...m, isRead: true };
+        }
+        return m;
+      }),
+    )
   }
 
   public fetchMessages(chatId: string) {
@@ -65,16 +103,18 @@ export class MessagesService {
   }
 
   public sendMessage(chat: Chat, text: string) {
+    const date = new Date().getTime();
     socket.emit(PRIVATE_MESSAGE, {
       text,
+      date,
       to: chat.user._id,
       chatId: chat._id,
     });
     const messages = this.messagesMap[chat._id] || [];
     const newMessage = {
-      _id: new Date().toString(),
+      _id: date.toString(),
       text,
-      date: new Date(),
+      date,
       sender: this.userService.user?._id || '0',
       isRead: false,
       chatId: chat._id,
