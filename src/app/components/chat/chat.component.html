@@ -18,11 +18,19 @@
         />
       }
       <div>
-        <h2>{{ chat.user.username }}</h2>
-        <span>{{
-          (chat.user.isOnline && "Online") ||
-            (chat.user.lastSeen && (chat.user.lastSeen | dateAgo))
-        }}</span>
+        <h2>
+          {{ chat.user.username }}
+          @if (chat.user.isOnline) {
+            &nbsp;<i
+              class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"
+            ></i>
+          }
+        </h2>
+        @if (!chat.user.isOnline) {
+          <span class="text-slate-500 text-sm">{{
+            chat.user.lastSeen && (chat.user.lastSeen | dateAgo)
+          }}</span>
+        }
       </div>
       <p-button
         icon="pi pi-ellipsis-v"
@@ -56,16 +64,16 @@
               [userId]="userId"
             ></app-message>
           } @placeholder {
-            <div
-              class="p-3 rounded-3xl max-w-[75%] min-w-20 whitespace-pre-wrap break-all"
+            <app-dummy-message
+              class="relative p-3 rounded-3xl max-w-[75%] min-w-20"
               [ngClass]="
                 message.sender === userId
                   ? 'bg-indigo-500 text-white rounded-ee-none'
                   : 'bg-slate-100 rounded-ss-none'
               "
-            >
-              {{ message.text }}
-            </div>
+              [message]="message"
+              [userId]="userId"
+            ></app-dummy-message>
           }
           @if (message.sender === userId) {
             <i
@@ -88,7 +96,7 @@
       class="w-full rounded-xl min-h-20"
       rows="1"
       pInputTextarea
-      [(ngModel)]="message"
+      [(ngModel)]="inputMessage"
       (keyup.enter)="sendMessage($event)"
     ></textarea>
   </div>

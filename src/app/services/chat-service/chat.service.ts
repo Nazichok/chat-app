@@ -15,7 +15,7 @@ export interface User {
   _id: string;
   username: string;
   img: string;
-  lastSeen?: Date;
+  lastSeen?: number;
   isOnline?: boolean;
 }
 
@@ -102,7 +102,7 @@ export class ChatService {
         if (chat.user._id === userId) {
           return {
             ...chat,
-            user: { ...chat.user, isOnline: false },
+            user: { ...chat.user, isOnline: false, lastSeen: Date.now() },
           };
         }
         return chat;

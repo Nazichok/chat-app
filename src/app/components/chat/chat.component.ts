@@ -36,6 +36,7 @@ import { ResizeTextAreaDirective } from 'src/app/directives/resize-text-area.dir
 import { MessageComponent } from './message/message/message.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { _last, elementInViewPort } from 'src/app/helpers/utils';
+import { DummyMessageComponent } from './message/message/dummy-message/dummy-message.component';
 
 @Component({
   selector: 'app-chat',
@@ -48,6 +49,7 @@ import { _last, elementInViewPort } from 'src/app/helpers/utils';
     InputTextareaModule,
     RouterLink,
     MessageComponent,
+    DummyMessageComponent,
     AsyncPipe,
     AvatarLetterPipe,
     DateAgoPipe,
@@ -64,11 +66,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
   chat: Chat;
   messages: Message[] = [];
   userId: string;
-  message = '';
+  inputMessage = '';
   chatId = '';
   initialScroll = true;
   scrolling = false;
-  mayScroll = false;
+  messagesLength = 0;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -79,23 +81,23 @@ export class ChatComponent implements OnInit, AfterViewInit {
     effect(() => {
       let scrolledId = localStorage.getItem(`chat-${this.chatId}`);
       const elements = this.messageElements();
-      if (this.mayScroll) {
+      if (this.messagesLength < elements.length && !this.initialScroll) {
+        this.messagesLength = elements.length;
         if (scrolledId && this.messages.slice(-2)[0]._id === scrolledId) {
-          localStorage.setItem(
-            `chat-${this.chatId}`,
-            this.messages.slice(-1)[0]._id,
-          );
-          scrolledId = this.messages.slice(-1)[0]._id;
-          this.mayScroll = false;
+          localStorage.setItem(`chat-${this.chatId}`, _last(this.messages)._id);
+          scrolledId = _last(this.messages)._id;
         }
       }
       if (scrolledId) {
         this.scrolling = true;
-        const el = elements.find(
-          (el) => el.nativeElement.id === scrolledId,
-        );
+        const el = elements.find((el) => el.nativeElement.id === scrolledId);
         if (el) {
-          el.nativeElement.scrollIntoView({ block: 'end', inline: 'nearest', behavior: this.initialScroll ? 'instant' : 'smooth' });
+          const isLast = _last(this.messages)._id === scrolledId;
+          el.nativeElement.scrollIntoView({
+            block: isLast ? 'start' : 'end',
+            inline: 'nearest',
+            behavior: this.initialScroll ? 'instant' : 'smooth',
+          });
           this.initialScroll = false;
         }
         this.scrolling = false;
@@ -117,8 +119,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
         this.chatId = routeParams['chatId'];
         this.chat = chats.find((c) => c._id === this.chatId) || ({} as Chat);
         if (messagesMap[this.chatId]) {
-          this.mayScroll =
-            this.messages.length <= messagesMap[this.chatId].length;
           this.messages = messagesMap[this.chatId];
         }
       });
@@ -131,16 +131,15 @@ export class ChatComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     fromEvent<Event>(this.messagesContainer.nativeElement, 'scroll')
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        debounceTime(500),
+        filter(() => !this.scrolling && !this.initialScroll),
         distinctUntilChanged(),
-        filter(() => !this.scrolling),
+        debounceTime(500),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         const visibleMsgs = Array.from(this.messageElements())
           .map((el) => el.nativeElement as HTMLElement)
           .filter((m) => elementInViewPort(m));
-
         if (visibleMsgs.length === 0) {
           return;
         }
@@ -160,9 +159,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   sendMessage(event: Event) {
     event.preventDefault();
-    if (this.message) {
-      this.messagesService.sendMessage(this.chat, this.message);
-      this.message = '';
+    if (this.inputMessage) {
+      this.messagesService.sendMessage(this.chat, this.inputMessage);
+      this.inputMessage = '';
     }
   }
 }

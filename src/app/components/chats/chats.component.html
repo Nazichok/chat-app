@@ -71,7 +71,7 @@
                 </div>
               </div>
               @if (chat.lastMessage) {
-                <span>{{ chat.lastMessage.date | dateAgo }}</span>
+                <span class="text-slate-500 text-base">{{ chat.lastMessage.date | dateAgo }}</span>
               }
               @if (chatOpened) {
                 <span class="text-[--primary-color] font-medium">Message</span>
