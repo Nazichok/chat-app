@@ -43,13 +43,13 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storageService: UserService,
+    private userService: UserService,
     private fb: FormBuilder,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.storageService.user$.subscribe((user) => {
+    this.userService.user$.subscribe((user) => {
       if (user) {
         this.router.navigate([APP_ROUTES.CHATS]);
       }
@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(username, password).subscribe({
       next: (data) => {
-        this.storageService.saveUser(data);
+        this.userService.saveUser(data);
         this.isLoginFailed = false;
         this.isLoggedIn = true;
       },

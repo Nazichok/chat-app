@@ -5,8 +5,8 @@ import { Message } from '@services/messages.service/messages.service';
 import { UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
-import { serverUrl } from 'src/app/config';
 import socket, { SocketEvents } from 'src/app/socket';
+import { environment } from 'src/environments/environment';
 
 const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, CONNECT, DISCONNECT } =
   SocketEvents;
@@ -26,8 +26,8 @@ export interface Chat {
   unreadCount: number;
 }
 
-const API_URL = `${serverUrl}/api/chats`;
-const USERS_API_URL = `${serverUrl}/api/users`;
+const API_URL = `${environment.serverUrl}/api/chats`;
+const USERS_API_URL = `${environment.serverUrl}/api/users`;
 
 @Injectable({
   providedIn: 'root',
