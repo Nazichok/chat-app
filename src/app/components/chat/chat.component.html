@@ -38,6 +38,8 @@
       @for (message of messages; track message._id) {
         <li
           class="flex gap-2 mb-3"
+          [id]="message._id"
+          #messageElement
           [ngClass]="
             message.sender === userId ? 'justify-end' : 'justify-start'
           "
@@ -55,8 +57,15 @@
             ></app-message>
           } @placeholder {
             <div
-              class="w-10 h-10 rounded-full bg-slate-100 animate-pulse"
-            ></div>
+              class="p-3 rounded-3xl max-w-[75%] min-w-20 whitespace-pre-wrap break-all"
+              [ngClass]="
+                message.sender === userId
+                  ? 'bg-indigo-500 text-white rounded-ee-none'
+                  : 'bg-slate-100 rounded-ss-none'
+              "
+            >
+              {{ message.text }}
+            </div>
           }
           @if (message.sender === userId) {
             <i
