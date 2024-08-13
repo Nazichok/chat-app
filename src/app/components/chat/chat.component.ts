@@ -80,7 +80,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
       let scrolledId = localStorage.getItem(`chat-${this.chatId}`);
       const elements = this.messageElements();
       if (this.mayScroll) {
-        debugger;
         if (scrolledId && this.messages.slice(-2)[0]._id === scrolledId) {
           localStorage.setItem(
             `chat-${this.chatId}`,
