@@ -7,6 +7,7 @@ import { authInterceptor } from './helpers/auth.interceptor';
 import { errorInterceptor } from './helpers/error.interceptor';
 import { MessageService } from 'primeng/api';
 import { CancelSameApisInterceptor } from './helpers/cancel-same-request.interceptor';
+import { DialogService } from 'primeng/dynamicdialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     ),
     { provide: HTTP_INTERCEPTORS, useClass: CancelSameApisInterceptor, multi: true },
     provideAnimations(),
-    MessageService
+    MessageService,
+    DialogService
   ],
 };

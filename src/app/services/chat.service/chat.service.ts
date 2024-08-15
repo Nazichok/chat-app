@@ -142,7 +142,7 @@ export class ChatService {
     const chat = this._chats.value.find((chat) => chat.user._id === user._id);
     if (!chat) {
       this.createChat(user).subscribe((chat) => {
-        this._chats.next([...this._chats.value, chat]);
+        this._chats.next([...this._chats.value, { ...chat, user }]);
         this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
       });
     } else {

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Chat, ChatService } from '@services/chat-service/chat.service';
+import { Chat, ChatService } from '@services/chat.service/chat.service';
 import { UserService } from '@services/user.service/user.service';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -37,6 +37,8 @@ import { MessageComponent } from './message/message/message.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { _last, elementInViewPort } from 'src/app/helpers/utils';
 import { DummyMessageComponent } from './message/message/dummy-message/dummy-message.component';
+import { ProfileComponent } from '@components/profile/profile.component';
+import { ModalService } from '@services/modal.service/modal.service';
 
 @Component({
   selector: 'app-chat',
@@ -77,6 +79,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private messagesService: MessagesService,
     private chatService: ChatService,
+    private modalService: ModalService
   ) {
     effect(() => {
       let scrolledId = localStorage.getItem(`chat-${this.chatId}`);
@@ -155,6 +158,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
             : _last(visibleMsgs).id;
         localStorage.setItem(`chat-${this.chatId}`, scrollToId);
       });
+  }
+
+  openUserModal() {
+    this.modalService.openProfileModal(this.chat.user);
   }
 
   sendMessage(event: Event) {

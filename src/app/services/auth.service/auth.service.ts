@@ -23,7 +23,6 @@ export class AuthService {
   isRefreshing = false;
 
   login(username: string, password: string): Observable<any> {
-    console.log(environment.serverUrl);
     return this.http.post(
       AUTH_API + '/signin',
       {

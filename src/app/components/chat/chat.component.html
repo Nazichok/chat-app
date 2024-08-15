@@ -8,29 +8,31 @@
         severity="secondary"
         [routerLink]="['/' + routes.CHATS]"
       />
-      @if (chat.user.img) {
-        <p-avatar image="{{ chat.user.img }}" size="large" shape="circle" />
-      } @else {
-        <p-avatar
-          label="{{ chat.user.username | avatarLetter }}"
-          size="large"
-          shape="circle"
-        />
-      }
-      <div>
-        <h2>
-          {{ chat.user.username }}
-          @if (chat.user.isOnline) {
-            &nbsp;<i
-              class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"
-            ></i>
-          }
-        </h2>
-        @if (!chat.user.isOnline) {
-          <span class="text-slate-500 text-sm">{{
-            chat.user.lastSeen && (chat.user.lastSeen | dateAgo)
-          }}</span>
+      <div class="flex gap-2 cursor-pointer" (click)="openUserModal()">
+        @if (chat.user.img) {
+          <p-avatar image="{{ chat.user.img }}" size="large" shape="circle" />
+        } @else {
+          <p-avatar
+            label="{{ chat.user.username | avatarLetter }}"
+            size="large"
+            shape="circle"
+          />
         }
+        <div>
+          <h2>
+            {{ chat.user.username }}
+            @if (chat.user.isOnline) {
+              &nbsp;<i
+                class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"
+              ></i>
+            }
+          </h2>
+          @if (!chat.user.isOnline) {
+            <span class="text-slate-500 text-sm">{{
+              chat.user.lastSeen && (chat.user.lastSeen | dateAgo)
+            }}</span>
+          }
+        </div>
       </div>
       <p-button
         icon="pi pi-ellipsis-v"

@@ -14,26 +14,19 @@
     @if (!isLoggedIn) {
       <ul class="flex items-center gap-2 ml-auto">
         <li>
-          <a class="nav-link" [routerLink]="routes.REGISTER">Sign Up</a>
+          <a [routerLink]="routes.REGISTER">Sign Up</a>
         </li>
         <li>
-          <a class="nav-link" [routerLink]="routes.LOGIN">Login</a>
+          <a [routerLink]="routes.LOGIN">Login</a>
         </li>
       </ul>
     } @else {
       <ul class="flex items-center gap-2 ml-auto">
         <li>
-          <p-button
-            severity="secondary"
-            class="nav-link"
-            [routerLink]="routes.PROFILE"
-            label="{{ username }}"
-          ></p-button>
+          <p-button severity="secondary" label="{{ username }}" (click)="openUserModal()"></p-button>
         </li>
         <li>
-          <p-button severity="secondary" class="nav-link" (click)="logout()"
-            >LogOut</p-button
-          >
+          <p-button severity="secondary" (click)="logout()">LogOut</p-button>
         </li>
       </ul>
     }

@@ -1,15 +1,35 @@
-@if (currentUser) {
-<div class="container">
-  <header class="jumbotron">
-    <h3>
-      <strong>{{ currentUser.username }}</strong> Profile
-    </h3>
-  </header>
-  <p>
-    <strong>Email:</strong>
-    {{ currentUser.email }}
-  </p>
-</div>
+@if (user) {
+  @if (!isLoggedIn) {
+    <div class="mb-4">
+      @if (user.img) {
+        <p-image
+          src="{{ user.img }}"
+          alt="Image"
+          class="w-full h-auto"
+          [preview]="true"
+        />
+      } @else {
+        <div class="flex justify-center">
+          <div
+            class="flex justify-center items-center rounded-full bg-slate-100 text-xl h-24 aspect-square"
+          >
+            {{ user.username | avatarLetter }}
+          </div>
+        </div>
+      }
+    </div>
+    <header class="mb-4">
+      <h3>
+        <strong>{{ user.username }}</strong>
+      </h3>
+    </header>
+    <p>
+      <strong>Email:</strong>
+      {{ user.email }}
+    </p>
+  } @else {
+    <app-image-upload [user]="user"></app-image-upload>
+  }
 } @else {
-<p>Please login.</p>
+  <p>Please login.</p>
 }

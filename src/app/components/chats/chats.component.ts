@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { BadgeModule } from 'primeng/badge';
 import { filter, finalize, map } from 'rxjs';
-import { Chat, ChatService, User } from '@services/chat-service/chat.service';
+import { Chat, ChatService, User } from '@services/chat.service/chat.service';
 import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,

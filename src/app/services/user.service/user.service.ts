@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import crypto from 'crypto-js';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 const USER_KEY = 'auth-user';
+const API_URL = `${environment.serverUrl}/api/user`;
 
 export interface UserInterface {
   accessToken: string;
@@ -9,6 +13,7 @@ export interface UserInterface {
   _id: string;
   refreshToken: string;
   username: string;
+  img: string;
 }
 
 export type User = UserInterface | null;
@@ -21,6 +26,8 @@ export class UserService {
   private _isOnline = new BehaviorSubject<boolean>(false);
   user$ = this._user.asObservable();
   isOnline$ = this._isOnline.asObservable();
+
+  constructor(private http: HttpClient) {}
 
   public get user(): User {
     return this._user.value;
@@ -40,20 +47,43 @@ export class UserService {
 
   clean(): void {
     this._user.next(null);
-    window.localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_KEY);
   }
 
   initUser(): void {
     const user = window.localStorage.getItem(USER_KEY);
     if (user) {
-      this._user.next(JSON.parse(user));
+      const data = crypto.AES.decrypt(
+        user,
+        environment.localCryptoKey,
+      ).toString(crypto.enc.Utf8);
+      console.log(data);
+      this._user.next(JSON.parse(data));
     }
   }
 
   public saveUser(user: any): void {
     window.localStorage.removeItem(USER_KEY);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+    const userString = JSON.stringify(user);
+    const data = crypto.AES.encrypt(
+      userString,
+      environment.localCryptoKey,
+    ).toString();
+    window.localStorage.setItem(USER_KEY, data);
     this._user.next(user);
+  }
+
+  public updateUser(fields: Partial<User>): Observable<User> {
+    return this.http
+      .patch<User>(API_URL, fields)
+      .pipe(tap((user) => this.saveUser(user)));
+  }
+
+  public updateUserImg(img: Blob): Observable<string> {
+    const formData = new FormData();
+    formData.append('img', img);
+    return this.http
+      .post<string>(`${API_URL}/img`, formData)
+      .pipe(tap((photoUrl) => this.saveUser({ ...this.user, img: photoUrl })));
   }
 }

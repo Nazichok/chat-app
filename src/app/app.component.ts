@@ -9,9 +9,10 @@ import { APP_ROUTES } from './app.routes';
 import { ButtonModule } from 'primeng/button';
 import socket, { SocketEvents } from './socket';
 import { MessageService } from 'primeng/api';
-import { ChatService } from '@services/chat-service/chat.service';
+import { ChatService } from '@services/chat.service/chat.service';
 import { MessagesService } from '@services/messages.service/messages.service';
 import { AsyncPipe } from '@angular/common';
+import { ModalService } from '@services/modal.service/modal.service';
 
 const { CONNECT_ERROR } = SocketEvents;
 
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private eventBusService: EventBusService,
     private toastService: MessageService,
     private router: Router,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +57,8 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.messageService.getMessages(chat._id).subscribe(),
               ),
             ),
-          ).subscribe();
+          )
+          .subscribe();
       } else {
         this.isLoggedIn = false;
         this.username = '';
@@ -88,10 +91,14 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
+  openUserModal(): void {
+    this.modalService.openProfileModal(this.userService.user!);
+  }
+
   ngOnDestroy(): void {
     Object.values(SocketEvents).forEach((socketEvent) => {
       socket.off(socketEvent);
-    })
+    });
   }
 
   logout(): void {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Chat, ChatService } from '@services/chat-service/chat.service';
+import { Chat, ChatService } from '@services/chat.service/chat.service';
 import { UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, tap } from 'rxjs';
 import socket, { SocketEvents } from 'src/app/socket';
