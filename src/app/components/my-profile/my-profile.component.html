@@ -1,0 +1,127 @@
+<input type="file" class="hidden" (change)="onSelect($event)" #fileUpload />
+
+@if (userObject) {
+  <div class="flex justify-center relative p-5 mb-5 cursor-pointer">
+    @if (userObject.img) {
+      <p-image
+        src="{{ userObject.img }}"
+        alt="Image"
+        class="aspect-square"
+        [preview]="true"
+        appendTo="body"
+      />
+    } @else {
+      <div class="flex justify-center">
+        <div
+          class="flex justify-center items-center rounded-full bg-slate-100 text-xl h-24 aspect-square"
+        >
+          {{ userObject.username | avatarLetter }}
+        </div>
+      </div>
+    }
+    <p-button
+      icon="pi pi-pen-to-square"
+      class="absolute right-1 bottom-1 hover:scale-110 transform transition duration-150 [&>button]:bg-white"
+      (click)="fileUpload.click()"
+      [rounded]="true"
+      [outlined]="true"
+      severity="secondary"
+    />
+  </div>
+  <div class="flex justify-center items-center gap-2 mb-4">
+    <p-button
+      label="Update password"
+      severity="secondary"
+      [link]="true"
+      [outlined]="true"
+      [routerLink]="[routes.UPDATE_PASSWORD]"
+    />
+    <p-button
+      label="Edit data"
+      severity="secondary"
+      (onClick)="editMode = true"
+      [disabled]="!!editMode"
+    />
+  </div>
+  @if (editMode) {
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <div class="grid grid-cols-2 gap-4 mb-3">
+        <div class="col-span-2">
+          <input
+            pInputText
+            formControlName="username"
+            placeholder="Username"
+            class="w-full"
+          />
+        </div>
+        <div class="col-span-2">
+          <input
+            pInputText
+            formControlName="email"
+            placeholder="Email"
+            class="w-full"
+          />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <p-button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          (onClick)="toViewMode()"
+        />
+        <p-button
+          type="submit"
+          label="Save"
+          severity="primary"
+          [disabled]="formGroup.invalid || updateLoading"
+        />
+      </div>
+    </form>
+  } @else {
+    <div class="flex flex-col items-center">
+      <h3 class="mb-2 text-lg">{{ userObject.username }}</h3>
+      <p>{{ userObject.email }}</p>
+    </div>
+  }
+} @else {
+  <div class="flex justify-center">
+    <p-progressSpinner
+      [style]="{ width: '50px', height: '50px' }"
+      strokeWidth="8"
+      fill="var(--surface-ground)"
+      animationDuration=".5s"
+    />
+  </div>
+}
+
+<p-dialog
+  appendTo="body"
+  header="Update Profile Image"
+  [modal]="true"
+  [(visible)]="resizeVisible"
+  width="50vw"
+  [breakpoints]="{
+    '960px': '75vw',
+    '640px': '90vw',
+  }"
+>
+  <div *ngIf="imageChangedEvent" class="max-w-[300px]">
+    <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+    ></image-cropper>
+
+    <div class="flex justify-end gap-5">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        (onClick)="cancelUpload()"
+      />
+      <p-button label="Save" [loading]="updateLoading" (onClick)="upload()" />
+    </div>
+  </div>
+</p-dialog>

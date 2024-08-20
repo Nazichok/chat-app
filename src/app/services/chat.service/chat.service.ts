@@ -2,22 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Message } from '@services/messages.service/messages.service';
-import { UserService } from '@services/user.service/user.service';
+import { User, UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 import socket, { SocketEvents } from 'src/app/socket';
 import { environment } from 'src/environments/environment';
 
-const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, CONNECT, DISCONNECT } =
+const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, USER_UPDATED } =
   SocketEvents;
-
-export interface User {
-  _id: string;
-  username: string;
-  img: string;
-  lastSeen?: number;
-  isOnline?: boolean;
-}
 
 export interface Chat {
   user: User;
@@ -68,7 +60,6 @@ export class ChatService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private userService: UserService,
   ) {
     this._chats = new BehaviorSubject([] as Chat[]);
     this._usersOnline = new BehaviorSubject([] as string[]);
@@ -80,6 +71,18 @@ export class ChatService {
           ...chat,
           user: { ...chat.user, isOnline: userIds.includes(chat.user._id) },
         };
+      });
+    });
+
+    socket.on(USER_UPDATED, (user) => {
+      this.chats = this.chats.map((chat) => {
+        if (chat.user._id === user._id) {
+          return {
+            ...chat,
+            user: { ...chat.user, ...user },
+          };
+        }
+        return chat;
       });
     });
 
@@ -107,14 +110,6 @@ export class ChatService {
         }
         return chat;
       });
-    });
-
-    socket.on(CONNECT, () => {
-      this.userService.isOnline = true;
-    });
-
-    socket.on(DISCONNECT, () => {
-      this.userService.isOnline = false;
     });
   }
 

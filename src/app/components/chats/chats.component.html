@@ -15,7 +15,22 @@
       >
         <ng-template let-user pTemplate="item">
           <div class="flex items-center gap-2">
-            <p-avatar image="{{ user.img }}" size="normal" shape="circle" />
+            @if (user.img) {
+              <p-avatar
+                class="flex"
+                image="{{ user.img + 'thumbnail' }}"
+                size="normal"
+                shape="circle"
+              />
+            } @else {
+              <p-avatar
+                label="{{ user.username | avatarLetter }}"
+                class="flex"
+                size="normal"
+                shape="circle"
+              />
+            }
+
             <div>{{ user?.username }}</div>
           </div>
         </ng-template>
@@ -39,21 +54,26 @@
             <div class="flex justify-between items-center gap-4">
               @if (chat.user.img) {
                 <p-avatar
-                  image="{{ chat.user.img }}"
+                  class="flex"
+                  image="{{ chat.user.img + 'thumbnail' }}"
                   size="large"
                   shape="circle"
                 />
               } @else {
                 <p-avatar
                   label="{{ chat.user.username | avatarLetter }}"
+                  class="flex"
                   size="large"
                   shape="circle"
                 />
               }
               <div class="overflow-hidden flex-1">
-                <h3>{{ chat.user.username }}
+                <h3>
+                  {{ chat.user.username }}
                   @if (chat.user.isOnline) {
-                    &nbsp;<i class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"></i>
+                    &nbsp;<i
+                      class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"
+                    ></i>
                   }
                 </h3>
                 <div class="flex items-center gap-2">
@@ -71,7 +91,9 @@
                 </div>
               </div>
               @if (chat.lastMessage) {
-                <span class="text-slate-500 text-base">{{ chat.lastMessage.date | dateAgo }}</span>
+                <span class="text-slate-500 text-base">{{
+                  chat.lastMessage.date | dateAgo
+                }}</span>
               }
               @if (chatOpened) {
                 <span class="text-[--primary-color] font-medium">Message</span>

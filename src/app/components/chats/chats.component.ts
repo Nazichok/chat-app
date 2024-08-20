@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
 import { BadgeModule } from 'primeng/badge';
 import { filter, finalize, map } from 'rxjs';
-import { Chat, ChatService, User } from '@services/chat.service/chat.service';
+import { Chat, ChatService } from '@services/chat.service/chat.service';
 import {
   AutoCompleteCompleteEvent,
   AutoCompleteModule,
@@ -22,6 +22,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarLetterPipe } from 'src/app/pipes/avatar-letter.pipe';
+import { User } from '@services/user.service/user.service';
 
 @Component({
   selector: 'app-chats',

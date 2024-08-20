@@ -13,9 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
-import { getHttpErrorMsg } from 'src/app/helpers/utils';
 
 @Component({
   selector: 'app-login',
@@ -29,23 +28,26 @@ import { getHttpErrorMsg } from 'src/app/helpers/utils';
     PasswordModule,
     MessagesModule,
     ButtonModule,
+    RouterLink
   ],
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup = this.fb.group({
-    username: ['', Validators.required],
+    username: [
+      '',
+      [Validators.required, Validators.minLength(6), Validators.maxLength(32)],
+    ],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
   isLoggedIn = false;
-  isLoginFailed = false;
-  errorMessage = '';
+  routes = APP_ROUTES;
 
   constructor(
     private authService: AuthService,
     private userService: UserService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -53,22 +55,15 @@ export class LoginComponent implements OnInit {
       if (user) {
         this.router.navigate([APP_ROUTES.CHATS]);
       }
-    })
+    });
   }
 
   onSubmit(): void {
     const { username, password } = this.loginForm.value;
 
-    this.authService.login(username, password).subscribe({
-      next: (data) => {
-        this.userService.saveUser(data);
-        this.isLoginFailed = false;
-        this.isLoggedIn = true;
-      },
-      error: (err) => {
-        this.errorMessage = getHttpErrorMsg(err);
-        this.isLoginFailed = true;
-      },
+    this.authService.login(username, password).subscribe((data) => {
+      this.userService.saveUser(data);
+      this.isLoggedIn = true;
     });
   }
 }

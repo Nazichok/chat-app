@@ -7,19 +7,19 @@ import { environment } from 'src/environments/environment';
 const AUTH_API = `${environment.serverUrl}/api/auth`;
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
-export interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-};
+export interface RefreshTokenResponse {}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private storageService: UserService) {}
+  constructor(
+    private http: HttpClient,
+    private storageService: UserService,
+  ) {}
   isRefreshing = false;
 
   login(username: string, password: string): Observable<any> {
@@ -29,7 +29,7 @@ export class AuthService {
         username,
         password,
       },
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -41,7 +41,7 @@ export class AuthService {
         email,
         password,
       },
-      httpOptions
+      httpOptions,
     );
   }
 
@@ -51,6 +51,10 @@ export class AuthService {
   }
 
   refreshToken() {
-    return this.http.post<RefreshTokenResponse>(AUTH_API + '/refreshtoken', null, httpOptions);
+    return this.http.post<RefreshTokenResponse>(
+      AUTH_API + '/refreshtoken',
+      null,
+      httpOptions,
+    );
   }
 }

@@ -37,7 +37,6 @@ import { MessageComponent } from './message/message/message.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { _last, elementInViewPort } from 'src/app/helpers/utils';
 import { DummyMessageComponent } from './message/message/dummy-message/dummy-message.component';
-import { ProfileComponent } from '@components/profile/profile.component';
 import { ModalService } from '@services/modal.service/modal.service';
 
 @Component({

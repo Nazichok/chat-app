@@ -12,6 +12,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
+import { RouterLink } from '@angular/router';
+import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
   selector: 'app-register',
@@ -24,19 +26,21 @@ import { MessagesModule } from 'primeng/messages';
     CardModule,
     PasswordModule,
     MessagesModule,
+    RouterLink
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   signUpForm: FormGroup = this.fb.group({
-    username: ['', Validators.required],
+    username: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(32)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  routes = APP_ROUTES;
 
   constructor(private authService: AuthService, private fb: FormBuilder) {}
 

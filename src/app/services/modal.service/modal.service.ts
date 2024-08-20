@@ -1,21 +1,32 @@
-import { DialogService } from 'primeng/dynamicdialog';
-import { inject, Injectable } from '@angular/core';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ProfileComponent } from '@components/profile/profile.component';
-import { User } from '@services/chat.service/chat.service';
+import { User } from '@services/user.service/user.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ModalService {
-  dialogService: DialogService = inject(DialogService);
-  constructor() {}
+export class ModalService implements OnDestroy {
+  private profileModalRef: DynamicDialogRef | undefined;
+  constructor(
+    private dialogService: DialogService,
+    private router: Router,
+  ) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.profileModalRef?.close();
+      });
+  }
 
   openProfileModal(user: User) {
-    this.dialogService.open(ProfileComponent, {
+    this.profileModalRef = this.dialogService.open(ProfileComponent, {
       header: 'Profile',
       modal: true,
       closeOnEscape: true,
-      width: '50vw',
+      width: '30vw',
       breakpoints: {
         '960px': '75vw',
         '640px': '90vw',
@@ -24,5 +35,9 @@ export class ModalService {
         user,
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.profileModalRef?.close();
   }
 }

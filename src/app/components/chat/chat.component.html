@@ -10,15 +10,16 @@
       />
       <div class="flex gap-2 cursor-pointer" (click)="openUserModal()">
         @if (chat.user.img) {
-          <p-avatar image="{{ chat.user.img }}" size="large" shape="circle" />
+          <p-avatar image="{{ chat.user.img + 'thumbnail' }}" size="large" shape="circle" class="flex" />
         } @else {
           <p-avatar
             label="{{ chat.user.username | avatarLetter }}"
+            class="flex"
             size="large"
             shape="circle"
           />
         }
-        <div>
+        <div class="flex flex-col justify-center">
           <h2>
             {{ chat.user.username }}
             @if (chat.user.isOnline) {

@@ -1,13 +1,16 @@
 @if (user) {
-  @if (!isLoggedIn) {
-    <div class="mb-4">
+  @if (!isLoggedUser) {
+    <div class="mb-4 pt-2">
       @if (user.img) {
         <p-image
           src="{{ user.img }}"
           alt="Image"
-          class="w-full h-auto"
+          class="w-full h-auto aspect-square"
+          imageClass="border border-slate-300 rounded-full"
           [preview]="true"
-        />
+          appendTo="body"
+        >
+      </p-image>
       } @else {
         <div class="flex justify-center">
           <div
@@ -18,17 +21,17 @@
         </div>
       }
     </div>
-    <header class="mb-4">
-      <h3>
-        <strong>{{ user.username }}</strong>
-      </h3>
-    </header>
-    <p>
-      <strong>Email:</strong>
-      {{ user.email }}
-    </p>
+    <div class="flex flex-col items-center">
+      <h3 class="mb-2 text-lg">{{ user.username }}</h3>
+      <p>{{ user.email }}</p>
+      @if (!user.isOnline && user.lastSeen) {
+        <p>{{ user.lastSeen | dateAgo }}</p>
+      } @else if (user.isOnline) {
+        <p>Online</p>
+      }
+    </div>
   } @else {
-    <app-image-upload [user]="user"></app-image-upload>
+    <app-my-profile [user]="user"></app-my-profile>
   }
 } @else {
   <p>Please login.</p>

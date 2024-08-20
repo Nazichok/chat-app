@@ -1,34 +1,41 @@
 <div id="app">
   <p-toast key="notifications" />
-  <nav class="flex px-2 shadow-md">
+  <nav class="flex items-center px-2 shadow-md h-20">
     <a routerLink="/"
-      ><img src="/assets/logo.png" class="w-16 h-auto mr-5"
+      ><img src="/assets/logo.svg" class="h-12 w-auto"
     /></a>
-    <span class="flex items-center">
-      @if (isOnline$ | async) {
-        Online
-      } @else {
-        Offline
-      }
-    </span>
-    @if (!isLoggedIn) {
-      <ul class="flex items-center gap-2 ml-auto">
-        <li>
-          <a [routerLink]="routes.REGISTER">Sign Up</a>
-        </li>
-        <li>
-          <a [routerLink]="routes.LOGIN">Login</a>
-        </li>
-      </ul>
-    } @else {
-      <ul class="flex items-center gap-2 ml-auto">
-        <li>
-          <p-button severity="secondary" label="{{ username }}" (click)="openUserModal()"></p-button>
-        </li>
-        <li>
-          <p-button severity="secondary" (click)="logout()">LogOut</p-button>
-        </li>
-      </ul>
+    @if (isLoggedIn) {
+      <p-menu #menu [model]="items" [popup]="true" />
+      <div
+        pButton
+        pRipple
+        [text]="true"
+        (click)="menu.toggle($event)"
+        class="flex items-center gap-2 ml-auto"
+      >
+        @if (user?.img) {
+          <p-avatar
+            image="{{ user?.img + 'thumbnail' }}"
+            size="large"
+            shape="circle"
+            class="flex"
+          />
+        } @else {
+          <p-avatar
+            label="{{ user?.username | avatarLetter }}"
+            class="flex"
+            size="large"
+            shape="circle"
+          />
+        }
+        <span class="text-slate-700 flex items-center gap-2"
+          >{{ user?.username
+          }}<i
+            class="flex items-center pi pi-circle-fill text-[8px]"
+            [ngClass]="(isOnline$ | async) ? 'text-green-600' : 'text-red-600'"
+          ></i>
+        </span>
+      </div>
     }
   </nav>
 

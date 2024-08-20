@@ -17,7 +17,7 @@ export const errorInterceptor: HttpInterceptorFn = (
 
   return next(req).pipe(
     catchError((errorResponse: HttpErrorResponse) => {
-      if (errorResponse.status !== 401) {
+      if (errorResponse.status !== 401 || req.url.includes('auth/signin')) {
         const message = getHttpErrorMsg(errorResponse);
 
         messageService.add({

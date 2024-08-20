@@ -15,16 +15,25 @@
           class="w-full"
         />
       </div>
-      <div class="mb-2">
+      <div class="mb-5">
         <label for="password" class="block">Password</label>
         <p-password formControlName="password" autocomplete="on" [feedback]="false" [toggleMask]="true" class="block w-full [&_input]:w-full [&>div]:w-full" />
       </div>
 
-      <p-button
+      <div class="flex justify-between">
+        <p-button
+          type="button"
+          label="Sign Up"
+          severity="secondary"
+          [link]="true"
+          [routerLink]="'/' + routes.REGISTER"
+        ></p-button>
+        <p-button
         type="submit"
-        label="Submit"
+        label="Sign In"
         [disabled]="loginForm.invalid"
       ></p-button>
+      </div>
     </form>
     } @else {
     <p-messages
