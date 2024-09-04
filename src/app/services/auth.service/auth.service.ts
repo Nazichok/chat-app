@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user.service/user.service';
-import { environment } from 'src/environments/environment';
 
-const AUTH_API = `${environment.serverUrl}/api/auth`;
+const AUTH_API = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/auth`;
 
 export interface RefreshTokenResponse {}
 
