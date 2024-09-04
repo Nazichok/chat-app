@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user.service/user.service';
 
-const AUTH_API = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/auth`;
+const AUTH_API = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/auth`;
 
 export interface RefreshTokenResponse {}
 

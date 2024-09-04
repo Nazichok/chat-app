@@ -16,7 +16,7 @@ export interface Message {
   chatId: string;
 }
 
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/messages`;
+const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/messages`;
 @Injectable({
   providedIn: 'root',
 })

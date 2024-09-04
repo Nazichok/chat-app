@@ -7,7 +7,7 @@ import { SocketEvents } from 'src/app/socket';
 
 const { CONNECT, DISCONNECT, USER_UPDATED } = SocketEvents;
 const USER_KEY = 'auth-user';
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/user`;
+const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/user`;
 
 export interface User {
   _id: string;

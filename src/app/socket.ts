@@ -19,7 +19,7 @@ declare module 'socket.io-client' {
   }
 }
 
-const socket = io(_NGX_ENV_.NG_APP_SERVER_URLL, { autoConnect: false });
+const socket = io(_NGX_ENV_.NG_APP_SERVER_URL, { autoConnect: false });
 
 socket.onAny((event, ...args) => {
   console.log(event, args);

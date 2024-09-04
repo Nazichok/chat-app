@@ -17,8 +17,8 @@ export interface Chat {
   unreadCount: number;
 }
 
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/chats`;
-const USERS_API_URL = `${_NGX_ENV_.NG_APP_SERVER_URLL}/api/users`;
+const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/chats`;
+const USERS_API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/users`;
 
 @Injectable({
   providedIn: 'root',
