@@ -101,7 +101,7 @@ export class MessagesService {
     );
   }
 
-  public sendMessage(chat: Chat, text: string) {
+  public sendMessage(chat: Chat, text: string, sameUser: boolean) {
     const date = new Date().getTime();
     socket.emit(PRIVATE_MESSAGE, {
       text,
@@ -115,7 +115,7 @@ export class MessagesService {
       text,
       date,
       sender: this.userService.user?._id || '0',
-      isRead: false,
+      isRead: sameUser,
       chatId: chat._id,
     };
     this.updateMap(chat._id, messages.concat(newMessage));

@@ -166,7 +166,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   sendMessage(event: Event) {
     event.preventDefault();
     if (this.inputMessage) {
-      this.messagesService.sendMessage(this.chat, this.inputMessage);
+      this.messagesService.sendMessage(this.chat, this.inputMessage, this.userId === this.chat.user._id);
       this.inputMessage = '';
     }
   }
