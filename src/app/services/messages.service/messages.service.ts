@@ -108,6 +108,7 @@ export class MessagesService {
       date,
       to: chat.user._id,
       chatId: chat._id,
+      isRead: sameUser,
     });
     const messages = this.messagesMap[chat._id] || [];
     const newMessage = {

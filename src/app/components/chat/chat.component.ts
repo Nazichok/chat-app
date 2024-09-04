@@ -103,6 +103,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
           this.initialScroll = false;
         }
         this.scrolling = false;
+      } else {
+        this.initialScroll = false;
       }
     });
   }
