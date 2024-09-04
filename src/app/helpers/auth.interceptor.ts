@@ -1,9 +1,4 @@
-import {
-  HttpInterceptorFn,
-  HttpRequest,
-  HttpErrorResponse,
-  HttpHandlerFn,
-} from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest, HttpErrorResponse, HttpHandlerFn } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { EventBusService, EventData } from '@services/bus-service.service';
