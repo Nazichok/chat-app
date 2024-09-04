@@ -15,6 +15,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,7 @@ import { APP_ROUTES } from 'src/app/app.routes';
     PasswordModule,
     MessagesModule,
     ButtonModule,
-    RouterLink
+    RouterLink,
   ],
   styleUrl: './login.component.scss',
 })
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
   });
   isLoggedIn = false;
   routes = APP_ROUTES;
+  loading = false;
 
   constructor(
     private authService: AuthService,
@@ -60,10 +62,14 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     const { username, password } = this.loginForm.value;
+    this.loading = true;
 
-    this.authService.login(username, password).subscribe((data) => {
-      this.userService.saveUser(data);
-      this.isLoggedIn = true;
-    });
+    this.authService
+      .login(username, password)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe((data) => {
+        this.userService.saveUser(data);
+        this.isLoggedIn = true;
+      });
   }
 }

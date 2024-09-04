@@ -3,6 +3,7 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 import { PasswordModule } from 'primeng/password';
+import { finalize } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
@@ -35,17 +37,21 @@ export class UpdatePasswordComponent {
       newPasswordAgain: ['', [Validators.required, Validators.minLength(6)]],
     },
     {
-      validators: (group: FormGroup) => {
+      validators: (group: FormGroup): ValidationErrors | null => {
         if (
           group.get('newPassword')?.value !==
           group.get('newPasswordAgain')?.value
         ) {
           group.get('newPasswordAgain')?.setErrors({ passwordMismatch: true });
+          return {
+            passwordMismatch: true,
+          };
         }
         return null;
       },
     },
   );
+  loading = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -53,11 +59,13 @@ export class UpdatePasswordComponent {
   ) {}
 
   onSubmit(): void {
+    this.loading = true;
     this.userService
       .updatePassword({
         oldPassword: this.updatePasswordForm.value.oldPassword,
         newPassword: this.updatePasswordForm.value.newPassword,
       })
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe(() => {
         this.isSuccessful = true;
       });

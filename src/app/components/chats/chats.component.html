@@ -92,7 +92,7 @@
               </div>
               @if (chat.lastMessage) {
                 <span class="text-slate-500 text-base">{{
-                  chat.lastMessage.date | dateAgo
+                  chat.lastMessage.date | dateAgo | async
                 }}</span>
               }
               @if (chatOpened) {

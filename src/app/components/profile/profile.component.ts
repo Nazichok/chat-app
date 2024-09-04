@@ -6,6 +6,7 @@ import { ImageModule } from 'primeng/image';
 import { AvatarLetterPipe } from 'src/app/pipes/avatar-letter.pipe';
 import { MyProfileComponent } from '@components/my-profile/my-profile.component';
 import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
@@ -14,6 +15,7 @@ import { DateAgoPipe } from 'src/app/pipes/date-ago.pipe';
     AvatarModule,
     ImageModule,
     MyProfileComponent,
+    AsyncPipe,
     AvatarLetterPipe,
     DateAgoPipe,
   ],

@@ -42,7 +42,8 @@
           <p-button
             type="submit"
             label="Sign Up"
-            [disabled]="signUpForm.invalid"
+            [disabled]="signUpForm.invalid || loading"
+            [loading]="loading"
           ></p-button>
         </div>
       </form>

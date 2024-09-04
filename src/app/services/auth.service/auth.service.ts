@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user.service/user.service';
 import { environment } from 'src/environments/environment';
 
 const AUTH_API = `${environment.serverUrl}/api/auth`;
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-};
 
 export interface RefreshTokenResponse {}
 
@@ -29,7 +25,6 @@ export class AuthService {
         username,
         password,
       },
-      httpOptions,
     );
   }
 
@@ -41,20 +36,36 @@ export class AuthService {
         email,
         password,
       },
-      httpOptions,
     );
   }
 
   logout(): Observable<any> {
     const userId = this.storageService.user!._id;
-    return this.http.post(AUTH_API + '/signout', { userId }, httpOptions);
+    return this.http.post(AUTH_API + '/signout', { userId });
   }
 
   refreshToken() {
     return this.http.post<RefreshTokenResponse>(
       AUTH_API + '/refreshtoken',
       null,
-      httpOptions,
+    );
+  }
+
+  resetPasswordRequest(email: string): Observable<any> {
+    return this.http.post(
+      AUTH_API + '/resetpasswordrequest',
+      { email },
+    );
+  }
+
+  resetPassword(
+    password: string,
+    token: string,
+    userId: string,
+  ): Observable<any> {
+    return this.http.post(
+      AUTH_API + '/resetpassword',
+      { token, userId, password },
     );
   }
 }

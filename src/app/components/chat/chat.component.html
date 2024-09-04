@@ -30,7 +30,7 @@
           </h2>
           @if (!chat.user.isOnline) {
             <span class="text-slate-500 text-sm">{{
-              chat.user.lastSeen && (chat.user.lastSeen | dateAgo)
+              chat.user.lastSeen && (chat.user.lastSeen | dateAgo | async)
             }}</span>
           }
         </div>

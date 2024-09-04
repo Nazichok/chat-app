@@ -25,7 +25,7 @@
       <h3 class="mb-2 text-lg">{{ user.username }}</h3>
       <p>{{ user.email }}</p>
       @if (!user.isOnline && user.lastSeen) {
-        <p>{{ user.lastSeen | dateAgo }}</p>
+        <p>{{ user.lastSeen | dateAgo | async }}</p>
       } @else if (user.isOnline) {
         <p>Online</p>
       }
