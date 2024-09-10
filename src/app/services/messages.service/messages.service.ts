@@ -101,12 +101,16 @@ export class MessagesService {
     );
   }
 
-  public sendMessage(chat: Chat, text: string, sameUser: boolean) {
+  public sendMessage(chat: Chat, text: string) {
     const date = new Date().getTime();
+    const sender = this.userService.user?._id || '0';
+    const sameUser = sender === chat.user._id;
+
     socket.emit(PRIVATE_MESSAGE, {
       text,
       date,
       to: chat.user._id,
+      sender,
       chatId: chat._id,
       isRead: sameUser,
     });
@@ -115,7 +119,7 @@ export class MessagesService {
       _id: date.toString(),
       text,
       date,
-      sender: this.userService.user?._id || '0',
+      sender,
       isRead: sameUser,
       chatId: chat._id,
     };
