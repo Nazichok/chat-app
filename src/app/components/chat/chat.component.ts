@@ -124,6 +124,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
         this.chat = chats.find((c) => c._id === this.chatId) || ({} as Chat);
         if (messagesMap[this.chatId]) {
           this.messages = messagesMap[this.chatId];
+        } else {
+          this.messages = [];
         }
       });
 
