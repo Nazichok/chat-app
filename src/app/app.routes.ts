@@ -7,6 +7,7 @@ import { authGuard } from './guards/auth.guard';
 import { UpdatePasswordComponent } from '@components/update-password/update-password.component';
 import { ForgotPasswordComponent } from '@components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from '@components/reset-password/reset-password.component';
+import { ConfirmEmailComponent } from '@components/confirm-email/confirm-email.component';
 
 export const APP_ROUTES = {
   CHATS: 'chats',
@@ -15,6 +16,7 @@ export const APP_ROUTES = {
   UPDATE_PASSWORD: 'update-password',
   FORGOT_PASSWORD: 'forgot-password',
   RESET_PASSWORD: 'reset-password',
+  CONFIRM_EMAIL: 'confirm-email',
 };
 
 export const ROUTE_PARAMS = {
@@ -39,6 +41,7 @@ export const routes: Routes = [
   { path: APP_ROUTES.UPDATE_PASSWORD, component: UpdatePasswordComponent },
   { path: APP_ROUTES.FORGOT_PASSWORD, component: ForgotPasswordComponent },
   { path: APP_ROUTES.RESET_PASSWORD, component: ResetPasswordComponent },
-  { path: '', redirectTo: APP_ROUTES.CHATS, pathMatch: 'full' },
+  { path: APP_ROUTES.CONFIRM_EMAIL, component: ConfirmEmailComponent },
   { path: '**', redirectTo: APP_ROUTES.CHATS },
+  { path: '', redirectTo: APP_ROUTES.CHATS, pathMatch: 'full' },
 ];

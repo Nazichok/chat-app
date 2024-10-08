@@ -67,4 +67,11 @@ export class AuthService {
       { token, userId, password },
     );
   }
+
+  confirmEmail(token: string, userId: string): Observable<any> {
+    return this.http.post(
+      AUTH_API + '/confirmemail',
+      { token, userId },
+    );
+  }
 }

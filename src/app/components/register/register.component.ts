@@ -41,10 +41,9 @@ export class RegisterComponent {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
   isSuccessful = false;
-  isSignUpFailed = false;
-  errorMessage = '';
   routes = APP_ROUTES;
   loading = false;
+  successMessage = 'Your registration is successful!';
 
   constructor(
     private authService: AuthService,
@@ -57,9 +56,11 @@ export class RegisterComponent {
     this.authService
       .register(username, email, password)
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe(() => {
+      .subscribe(({ message }) => {
+        debugger;
         this.isSuccessful = true;
-        this.isSignUpFailed = false;
+        this.successMessage = message;
+        this.signUpForm.reset();
       });
   }
 }
