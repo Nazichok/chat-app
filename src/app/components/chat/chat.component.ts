@@ -143,7 +143,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        debugger;
         const visibleMsgs = Array.from(this.messageElements())
           .map((el) => el.nativeElement as HTMLElement)
           .filter((m) => elementInViewPort(m));
