@@ -1,3 +1,4 @@
+import { loadingInterceptor } from './helpers/loading.interceptor';
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),
-      withInterceptors([authInterceptor, errorInterceptor])
+      withInterceptors([loadingInterceptor,authInterceptor, errorInterceptor])
     ),
     { provide: HTTP_INTERCEPTORS, useClass: CancelSameApisInterceptor, multi: true },
     provideAnimations(),

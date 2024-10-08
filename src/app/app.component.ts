@@ -17,6 +17,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarLetterPipe } from './pipes/avatar-letter.pipe';
+import { LoadingService } from '@services/loading.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 const { CONNECT_ERROR } = SocketEvents;
 
@@ -28,6 +30,7 @@ const { CONNECT_ERROR } = SocketEvents;
     ButtonModule,
     MenuModule,
     CommonModule,
+    ProgressSpinnerModule,
     RippleModule,
     RouterModule,
     RouterOutlet,
@@ -45,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
   eventBusSub?: Subscription;
   routes = APP_ROUTES;
   isOnline$ = this.userService.isOnline$;
+  isLoading = false;
 
   items: MenuItem[] | undefined;
 
@@ -57,6 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private toastService: MessageService,
     private router: Router,
     private modalService: ModalService,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +126,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isLoggedIn = false;
         this.user = undefined;
       }
+    });
+
+    this.loadingService.loading$.subscribe((loading) => {
+      this.isLoading = loading;
     });
 
     this.eventBusSub = this.eventBusService.on('logout', () => {
