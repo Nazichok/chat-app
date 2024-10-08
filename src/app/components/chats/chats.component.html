@@ -103,6 +103,12 @@
         </p-card>
       </li>
     </ul>
+    <img class="mx-auto" [ngClass]="!chats.length ? 'max-w-44  my-10' : 'max-w-12 my-5'" src="/assets/icons/space.svg" alt="space icon">
+    @if (!chats.length) {
+      <div class="text-center text-slate-500 text-xl">Nothing here. Try to find someone to chat with!</div>
+    } @else {
+      <div class="text-center text-slate-500">May the force be with you</div>
+    }
   </div>
   <router-outlet></router-outlet>
 </div>

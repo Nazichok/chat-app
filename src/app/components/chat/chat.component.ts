@@ -83,7 +83,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
     effect(() => {
       let scrolledId = localStorage.getItem(`chat-${this.chatId}`);
       const elements = this.messageElements();
-      debugger;
       if (this.messagesLength < elements.length && !this.initialScroll) {
         this.messagesLength = elements.length;
         if (scrolledId && this.messages.slice(-2)[0]._id === scrolledId) {

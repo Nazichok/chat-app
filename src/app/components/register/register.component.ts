@@ -57,7 +57,6 @@ export class RegisterComponent {
       .register(username, email, password)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(({ message }) => {
-        debugger;
         this.isSuccessful = true;
         this.successMessage = message;
         this.signUpForm.reset();
