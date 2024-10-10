@@ -111,6 +111,9 @@
       [maintainAspectRatio]="true"
       [aspectRatio]="1"
       format="png"
+      [onlyScaleDown]="true"
+      [resizeToWidth]="500"
+      [resizeToHeight]="500"
       (imageCropped)="imageCropped($event)"
     ></image-cropper>
 

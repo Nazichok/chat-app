@@ -21,7 +21,6 @@ import { User, UserService } from '@services/user.service/user.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
-import { getHttpErrorMsg } from 'src/app/helpers/utils';
 import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
@@ -100,16 +99,19 @@ export class MyProfileComponent {
       return;
     }
     this.updateLoading = true;
-    this.userService.updateUser(updatedFields).subscribe(() => {
-      this.toViewMode();
-      this.updateLoading = false;
-      this.toastService.add({
-        key: 'notifications',
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Profile updated',
+    this.userService
+      .updateUser(updatedFields)
+      .pipe(finalize(() => (this.updateLoading = false)))
+      .subscribe(() => {
+        this.toViewMode();
+        this.updateLoading = false;
+        this.toastService.add({
+          key: 'notifications',
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Profile updated',
+        });
       });
-    });
   }
 
   toViewMode() {
