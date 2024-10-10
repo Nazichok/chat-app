@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 
 export enum SocketEvents {
   USER_CONNECTED = 'user connected',
@@ -19,7 +20,7 @@ declare module 'socket.io-client' {
   }
 }
 
-const socket = io(_NGX_ENV_.NG_APP_SERVER_URL, { autoConnect: false });
+const socket = io(environment.serverUrl, { autoConnect: false });
 
 socket.onAny((event, ...args) => {
   console.log(event, args);

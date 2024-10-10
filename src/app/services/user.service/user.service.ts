@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import crypto from 'crypto-js';
+import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import socket from 'src/app/socket';
 import { SocketEvents } from 'src/app/socket';
 
 const { CONNECT, DISCONNECT, USER_UPDATED } = SocketEvents;
 const USER_KEY = 'auth-user';
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/user`;
+const API_URL = `${environment.serverUrl}/api/user`;
 
 export interface User {
   _id: string;
@@ -65,9 +66,8 @@ export class UserService {
     if (user) {
       const data = crypto.AES.decrypt(
         user,
-        _NGX_ENV_.NG_APP_CRYPTO_KEY,
+        environment.localCryptoKey,
       ).toString(crypto.enc.Utf8);
-      console.log(data);
       this._user.next(JSON.parse(data));
     }
   }
@@ -77,7 +77,7 @@ export class UserService {
     const userString = JSON.stringify(user);
     const data = crypto.AES.encrypt(
       userString,
-      _NGX_ENV_.NG_APP_CRYPTO_KEY,
+      environment.localCryptoKey,
     ).toString();
     window.localStorage.setItem(USER_KEY, data);
     this._user.next(user);

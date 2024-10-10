@@ -6,6 +6,7 @@ import { User, UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 import socket, { SocketEvents } from 'src/app/socket';
+import { environment } from 'src/environments/environment';
 
 const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, USER_UPDATED } =
   SocketEvents;
@@ -17,8 +18,8 @@ export interface Chat {
   unreadCount: number;
 }
 
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/chats`;
-const USERS_API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/users`;
+const API_URL = `${environment.serverUrl}/api/chats`;
+const USERS_API_URL = `${environment.serverUrl}/api/users`;
 
 @Injectable({
   providedIn: 'root',

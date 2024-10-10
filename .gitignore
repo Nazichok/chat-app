@@ -11,8 +11,6 @@
 npm-debug.log
 yarn-error.log
 
-.env
-
 # IDEs and editors
 .idea/
 .project
@@ -42,4 +40,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-src/environments/environment.ts
+environment.prod.ts

@@ -4,6 +4,7 @@ import { Chat, ChatService } from '@services/chat.service/chat.service';
 import { UserService } from '@services/user.service/user.service';
 import { BehaviorSubject, tap } from 'rxjs';
 import socket, { SocketEvents } from 'src/app/socket';
+import { environment } from 'src/environments/environment';
 
 const { PRIVATE_MESSAGE, MESSAGE_READ } = SocketEvents;
 
@@ -16,7 +17,7 @@ export interface Message {
   chatId: string;
 }
 
-const API_URL = `${_NGX_ENV_.NG_APP_SERVER_URL}/api/messages`;
+const API_URL = `${environment.serverUrl}/api/messages`;
 @Injectable({
   providedIn: 'root',
 })
