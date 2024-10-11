@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^18.2.8",
     "@angular/platform-browser-dynamic": "^18.2.8",
     "@angular/router": "^18.2.8",
+    "@angular/service-worker": "^18.2.8",
     "crypto-js": "^4.2.0",
     "ngx-image-cropper": "^8.0.0",
     "primeicons": "^7.0.0",

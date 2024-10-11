@@ -1,5 +1,5 @@
 import { loadingInterceptor } from './helpers/loading.interceptor';
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
@@ -9,6 +9,7 @@ import { errorInterceptor } from './helpers/error.interceptor';
 import { MessageService } from 'primeng/api';
 import { CancelSameApisInterceptor } from './helpers/cancel-same-request.interceptor';
 import { DialogService } from 'primeng/dynamicdialog';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,9 @@ export const appConfig: ApplicationConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: CancelSameApisInterceptor, multi: true },
     provideAnimations(),
     MessageService,
-    DialogService
+    DialogService, provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
   ],
 };
