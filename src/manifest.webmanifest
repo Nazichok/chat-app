@@ -1,6 +1,6 @@
 {
-  "name": "chat-app",
-  "short_name": "chat-app",
+  "name": "Supachat",
+  "short_name": "Supachat",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

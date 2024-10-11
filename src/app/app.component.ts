@@ -42,7 +42,7 @@ const { CONNECT_ERROR } = SocketEvents;
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'chat-app';
+  title = 'Supachat';
   isLoggedIn = false;
   user?: User;
   eventBusSub?: Subscription;

@@ -26,5 +26,16 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "chats",
+      "urls": ["api/chats", "api/users", "api/messages"],
+      "cacheConfig": {
+        "maxSize": 10,
+        "strategy": "freshness",
+        "maxAge": "1h"
+      }
+    }
   ]
 }
