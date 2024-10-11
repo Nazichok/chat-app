@@ -14,7 +14,7 @@ import { errorInterceptor } from './helpers/error.interceptor';
 import { MessageService } from 'primeng/api';
 import { CancelSameApisInterceptor } from './helpers/cancel-same-request.interceptor';
 import { DialogService } from 'primeng/dynamicdialog';
-// import { provideServiceWorker } from '@angular/service-worker';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,9 +31,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     MessageService,
     DialogService,
-    // provideServiceWorker('ngsw-worker.js', {
-    //   enabled: !isDevMode(),
-    //   registrationStrategy: 'registerWhenStable:30000',
-    // }),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };
