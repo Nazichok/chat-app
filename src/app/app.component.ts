@@ -51,6 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoading = false;
 
   items: MenuItem[] | undefined;
+  intervalId: number;
 
   constructor(
     private userService: UserService,
@@ -89,38 +90,42 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isLoggedIn = true;
         this.user = user;
         if (!wasLoggedIn) {
-          this.chatService
-            .getChats()
-            .pipe(
-              mergeMap((chats) => {
-                // connect on login or page refresh (initUser)
-                const userId = user._id;
-                socket.auth = {
-                  userId,
-                  rooms: chats.map((chat) => chat.user._id),
-                };
-                socket.connect();
+          this.chatService.getChats().subscribe((chats) => {
+            // connect on login or page refresh (initUser)
+            const userId = user._id;
+            socket.auth = {
+              userId,
+              rooms: chats.map((chat) => chat.user._id),
+            };
+            socket.connect();
 
-                socket.on(CONNECT_ERROR, (err) => {
-                  if (err.message === 'User error') {
-                    this.userService.isOnline = false;
+            socket.on(CONNECT_ERROR, (err) => {
+              if (err.message === 'User error') {
+                this.userService.isOnline = false;
 
-                    this.toastService.add({
-                      key: 'notifications',
-                      severity: 'error',
-                      summary: 'Error',
-                      detail: 'User error. Try refresh page.',
-                      life: 50000,
-                    });
-                  }
+                this.toastService.add({
+                  key: 'notifications',
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'User error. Try refresh page.',
+                  life: 50000,
                 });
+              }
+            });
 
-                return chats.map((chat) =>
-                  this.messageService.getMessages(chat._id).subscribe(),
-                );
-              }),
-            )
-            .subscribe();
+            chats.forEach((chat) =>
+              this.messageService.getMessages(chat._id).subscribe(),
+            );
+          });
+
+          // @ts-ignore
+          this.intervalId = setInterval(() => {
+            this.chatService.getChats().subscribe((chats) => {
+              chats.forEach((chat) => {
+                this.messageService.getMessages(chat._id).subscribe();
+              });
+            });
+          }, 1000 * 60 * 5);
         }
       } else {
         this.isLoggedIn = false;
@@ -148,6 +153,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    clearInterval(this.intervalId);
     this.authService.logout().subscribe({
       next: () => {
         this.userService.clean();
