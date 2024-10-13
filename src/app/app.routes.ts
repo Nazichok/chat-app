@@ -8,6 +8,7 @@ import { UpdatePasswordComponent } from '@components/update-password/update-pass
 import { ForgotPasswordComponent } from '@components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from '@components/reset-password/reset-password.component';
 import { ConfirmEmailComponent } from '@components/confirm-email/confirm-email.component';
+import { TermsAndConditionsComponent } from '@components/terms-and-conditions/terms-and-conditions.component';
 
 export const APP_ROUTES = {
   CHATS: 'chats',
@@ -17,6 +18,7 @@ export const APP_ROUTES = {
   FORGOT_PASSWORD: 'forgot-password',
   RESET_PASSWORD: 'reset-password',
   CONFIRM_EMAIL: 'confirm-email',
+  TERMS_AND_CONDITIONS: 'terms-and-conditions',
 };
 
 export const ROUTE_PARAMS = {
@@ -42,6 +44,7 @@ export const routes: Routes = [
   { path: APP_ROUTES.FORGOT_PASSWORD, component: ForgotPasswordComponent },
   { path: APP_ROUTES.RESET_PASSWORD, component: ResetPasswordComponent },
   { path: APP_ROUTES.CONFIRM_EMAIL, component: ConfirmEmailComponent },
+  { path: APP_ROUTES.TERMS_AND_CONDITIONS, component: TermsAndConditionsComponent },
   { path: '**', redirectTo: APP_ROUTES.CHATS },
   { path: '', redirectTo: APP_ROUTES.CHATS, pathMatch: 'full' },
 ];

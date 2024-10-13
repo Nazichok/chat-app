@@ -1,6 +1,6 @@
-<div id="app">
+<div id="app" class="pt-20">
   <p-toast key="notifications" [life]="10000" />
-  <nav class="flex items-center px-2 shadow-md h-20">
+  <nav class="flex items-center px-2 shadow-md h-20 fixed top-0 z-10 w-full bg-white">
     <a routerLink="/"><img src="/assets/logo.svg" class="h-12 w-auto mr-3" /></a>
     @if (isLoading) {
       <p-progressSpinner

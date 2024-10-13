@@ -75,6 +75,13 @@ export class AppComponent implements OnInit, OnDestroy {
         },
       },
       {
+        label: 'T&C',
+        icon: 'pi pi-fw pi-file-edit',
+        command: () => {
+          this.router.navigate([APP_ROUTES.TERMS_AND_CONDITIONS]);
+        },
+      },
+      {
         label: 'Logout',
         icon: 'pi pi-fw pi-power-off',
         command: () => {
