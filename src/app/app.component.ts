@@ -119,13 +119,16 @@ export class AppComponent implements OnInit, OnDestroy {
           });
 
           // @ts-ignore
-          this.intervalId = setInterval(() => {
-            this.chatService.getChats().subscribe((chats) => {
-              chats.forEach((chat) => {
-                this.messageService.getMessages(chat._id).subscribe();
+          this.intervalId = setInterval(
+            () => {
+              this.chatService.getChats().subscribe((chats) => {
+                chats.forEach((chat) => {
+                  this.messageService.getMessages(chat._id).subscribe();
+                });
               });
-            });
-          }, 1000 * 60 * 5);
+            },
+            1000 * 60 * 5,
+          );
         }
       } else {
         this.isLoggedIn = false;
@@ -154,11 +157,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logout(): void {
     clearInterval(this.intervalId);
-    this.authService.logout().subscribe({
-      next: () => {
-        this.userService.clean();
-        this.router.navigate([APP_ROUTES.LOGIN]);
-      },
+    this.authService.logout().subscribe(() => {
+      this.userService.clean();
+      socket.disconnect();
+      this.router.navigate([APP_ROUTES.LOGIN]);
     });
   }
 }
