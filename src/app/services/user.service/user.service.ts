@@ -17,6 +17,7 @@ export interface User {
   img: string;
   lastSeen?: number;
   isOnline?: boolean;
+  isGoogleUser?: boolean;
 }
 
 @Injectable({

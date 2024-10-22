@@ -10,7 +10,7 @@
       />
       <div class="flex gap-2 cursor-pointer" (click)="openUserModal()">
         @if (chat.user.img) {
-          <p-avatar image="{{ chat.user.img + 'thumbnail' }}" size="large" shape="circle" class="flex" />
+          <p-avatar image="{{ chat.user.img + (chat.user.isGoogleUser ? '' : 'thumbnail') }}" size="large" shape="circle" class="flex" />
         } @else {
           <p-avatar
             label="{{ chat.user.username | avatarLetter }}"

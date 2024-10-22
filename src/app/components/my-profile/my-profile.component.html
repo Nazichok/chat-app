@@ -25,6 +25,13 @@
       (click)="fileUpload.click()"
       [rounded]="true"
       [outlined]="true"
+      [disabled]="userObject.isGoogleUser"
+      [ngClass]="userObject.isGoogleUser ? 'pointer-events-auto' : ''"
+      [pTooltip]="
+        userObject.isGoogleUser
+          ? 'This feature is not available for users logged in with Google'
+          : ''
+      "
       severity="secondary"
     />
   </div>
@@ -35,6 +42,13 @@
       [link]="true"
       [outlined]="true"
       [routerLink]="[routes.UPDATE_PASSWORD]"
+      [disabled]="userObject.isGoogleUser"
+      [ngClass]="userObject.isGoogleUser ? 'pointer-events-auto' : ''"
+      [pTooltip]="
+        userObject.isGoogleUser
+          ? 'This feature is not available for users logged in with Google'
+          : ''
+      "
     />
     <p-button
       label="Edit data"
@@ -60,6 +74,12 @@
             formControlName="email"
             placeholder="Email"
             class="w-full"
+            [ngClass]="userObject.isGoogleUser ? 'pointer-events-auto' : ''"
+            [pTooltip]="
+              userObject.isGoogleUser
+                ? 'This feature is not available for users logged in with Google'
+                : ''
+            "
           />
         </div>
       </div>

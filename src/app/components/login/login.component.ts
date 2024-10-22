@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service/auth.service';
-import { UserService } from '../../services/user.service/user.service';
+import { User, UserService } from '../../services/user.service/user.service';
 import {
   FormBuilder,
   FormGroup,
@@ -13,9 +13,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { Router, RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
 import { finalize } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
+declare const google: any;
 
 @Component({
   selector: 'app-login',
@@ -29,11 +33,12 @@ import { finalize } from 'rxjs';
     PasswordModule,
     MessagesModule,
     ButtonModule,
+    DividerModule,
     RouterLink,
   ],
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup = this.fb.group({
     username: [
       '',
@@ -44,6 +49,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   routes = APP_ROUTES;
   loading = false;
+  intervalId: any = 0;
 
   constructor(
     private authService: AuthService,
@@ -58,6 +64,22 @@ export class LoginComponent implements OnInit {
         this.router.navigate([APP_ROUTES.CHATS]);
       }
     });
+
+    this.intervalId = setInterval(() => {
+      if (google) {
+        clearInterval(this.intervalId);
+        this.initializeGoogleSignIn();
+      }
+    }, 200);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.intervalId);
+  }
+
+  getUserFromBE(user: User) {
+    this.userService.saveUser(user);
+    this.isLoggedIn = true;
   }
 
   onSubmit(): void {
@@ -67,9 +89,38 @@ export class LoginComponent implements OnInit {
     this.authService
       .login(username, password)
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe((data) => {
-        this.userService.saveUser(data);
-        this.isLoggedIn = true;
+      .subscribe((user) => {
+        this.getUserFromBE(user);
       });
+  }
+
+  initializeGoogleSignIn() {
+    google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleCredentialResponse.bind(this),
+      context: 'use',
+      use_fedcm_for_prompt: true,
+    });
+
+    google.accounts.id.renderButton(
+      // @ts-ignore
+      document.getElementById('google-signin-button'),
+      { theme: 'outline', size: 'medium' },
+    );
+  }
+
+  triggerGoogleSignIn() {
+    google.accounts.id.prompt();
+  }
+
+  handleCredentialResponse(response: any) {
+    this.authService.googleLogin(response.credential).subscribe({
+      next: (user: any) => {
+        this.getUserFromBE(user);
+      },
+      error: (error) => {
+        console.error('Google authentication failed', error);
+      },
+    });
   }
 }

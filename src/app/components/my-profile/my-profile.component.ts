@@ -22,6 +22,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
 import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-my-profile',
@@ -37,6 +38,7 @@ import { InputTextModule } from 'primeng/inputtext';
     ToggleButtonModule,
     ProgressSpinnerModule,
     ReactiveFormsModule,
+    TooltipModule,
     ImageCropperComponent,
     RouterLink,
     AvatarLetterPipe,
@@ -47,6 +49,9 @@ import { InputTextModule } from 'primeng/inputtext';
 export class MyProfileComponent {
   @Input() set user(userValue: User) {
     this.userObject = userValue;
+    if (userValue.isGoogleUser) {
+      this.formGroup.controls['email'].disable();
+    }
   }
   destroyRef = inject(DestroyRef);
   userObject: User | null;
@@ -76,7 +81,10 @@ export class MyProfileComponent {
       )
       .subscribe((user) => {
         this.userObject = user;
-        this.formGroup.patchValue(user!);
+        this.formGroup.patchValue(user);
+        if (user.isGoogleUser) {
+          this.formGroup.controls['email'].disable();
+        }
       });
   }
 

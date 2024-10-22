@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Chat, ChatService } from '@services/chat.service/chat.service';
 import { UserService } from '@services/user.service/user.service';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { SKIP_LOADING } from 'src/app/helpers/loading.interceptor';
 import socket, { SocketEvents } from 'src/app/socket';
 import { environment } from 'src/environments/environment';
 
@@ -49,12 +50,18 @@ export class MessagesService {
     private chatService: ChatService,
   ) {
     socket.on(PRIVATE_MESSAGE, (message: Message) => {
-      const messages = this.messagesMap[message.chatId] || [];
-      this.updateMap(
-        message.chatId,
-        messages.filter((m) => m.date !== message.date).concat(message),
-      );
-      this.chatService.newMessage(message);
+      if (this.messagesMap[message.chatId]) {
+        const messages = this.messagesMap[message.chatId] || [];
+        this.updateMap(
+          message.chatId,
+          messages.filter((m) => m.date !== message.date).concat(message),
+        );
+        this.chatService.newMessage(message);
+      } else {
+        this.chatService.getChat(message.chatId, true).subscribe((chat) => {
+          this.getMessages(chat._id).subscribe();
+        });
+      }
     });
 
     socket.on(MESSAGE_READ, ({ chatId, messageId }) => {
@@ -84,15 +91,23 @@ export class MessagesService {
         }
         return m;
       }),
-    )
+    );
   }
 
-  public fetchMessages(chatId: string) {
-    return this.http.get<Message[]>(`${API_URL}?chatId=${chatId}`);
+  public fetchMessages(
+    chatId: string,
+    skipLoading = false,
+  ): Observable<Message[]> {
+    return this.http.get<Message[]>(`${API_URL}?chatId=${chatId}`, {
+      context: new HttpContext().set(SKIP_LOADING, skipLoading),
+    });
   }
 
-  public getMessages(chatId: string) {
-    return this.fetchMessages(chatId).pipe(
+  public getMessages(
+    chatId: string,
+    skipLoading = false,
+  ): Observable<Message[]> {
+    return this.fetchMessages(chatId, skipLoading).pipe(
       tap((messages) => {
         this._messagesMap.next({
           ...this._messagesMap.value,

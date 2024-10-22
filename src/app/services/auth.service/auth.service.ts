@@ -75,4 +75,12 @@ export class AuthService {
       { token, userId },
     );
   }
+
+  googleLogin(token: string): Observable<any> {
+    return this.http.post<any>(`${AUTH_API}/google-login`, { token });
+  }
+
+  getRedirectUrl(): string {
+    return "/chats";
+  }
 }

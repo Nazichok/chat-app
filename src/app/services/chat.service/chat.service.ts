@@ -1,15 +1,20 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Message } from '@services/messages.service/messages.service';
-import { User, UserService } from '@services/user.service/user.service';
+import { User } from '@services/user.service/user.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
+import { SKIP_LOADING } from 'src/app/helpers/loading.interceptor';
 import socket, { SocketEvents } from 'src/app/socket';
 import { environment } from 'src/environments/environment';
 
-const { USER_IDS, USER_CONNECTED, USER_DISCONNECTED, USER_UPDATED } =
-  SocketEvents;
+const {
+  USER_IDS,
+  USER_CONNECTED,
+  USER_DISCONNECTED,
+  USER_UPDATED,
+} = SocketEvents;
 
 export interface Chat {
   user: User;
@@ -113,8 +118,8 @@ export class ChatService {
     });
   }
 
-  public getChats(): Observable<Chat[]> {
-    return this.fetchChats().pipe(
+  public getChats(skipLoading = false): Observable<Chat[]> {
+    return this.fetchChats(skipLoading).pipe(
       tap((chats) => {
         this.chats = chats.map((chat) => {
           return {
@@ -129,8 +134,24 @@ export class ChatService {
     );
   }
 
-  public fetchChats(): Observable<Chat[]> {
-    return this.http.get<Chat[]>(API_URL);
+  public getChat(chatId: string, skipLoading = false): Observable<Chat> {
+    return this.http
+      .get<Chat>(`${API_URL}/${chatId}`, {
+        context: new HttpContext().set(SKIP_LOADING, skipLoading),
+      })
+      .pipe(
+        tap((chat) => {
+          this.chats = [...this.chats, chat].sort(
+            (a, b) => b.lastMessage.date - a.lastMessage.date,
+          );
+        }),
+      );
+  }
+
+  public fetchChats(skipLoading = false): Observable<Chat[]> {
+    return this.http.get<Chat[]>(API_URL, {
+      context: new HttpContext().set(SKIP_LOADING, skipLoading),
+    });
   }
 
   public selectChat(user: User) {

@@ -1,6 +1,6 @@
 <div class="flex">
   <div
-    class="grow shrink-0 basis-[330px] min-w-0 px-3 border-x border-x-gray-300"
+    class="grow shrink-0 basis-[330px] min-w-0 px-3"
     [ngClass]="{ 'hidden md:block': !chatOpened }"
   >
     <div class="relative">
@@ -18,7 +18,7 @@
             @if (user.img) {
               <p-avatar
                 class="flex"
-                image="{{ user.img + 'thumbnail' }}"
+                image="{{ user.img + (user?.isGoogleUser ? '' : 'thumbnail') }}"
                 size="normal"
                 shape="circle"
               />
@@ -55,7 +55,7 @@
               @if (chat.user.img) {
                 <p-avatar
                   class="flex"
-                  image="{{ chat.user.img + 'thumbnail' }}"
+                  image="{{ chat.user.img + (chat.user.isGoogleUser ? '' : 'thumbnail') }}"
                   size="large"
                   shape="circle"
                 />
