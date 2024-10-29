@@ -64,9 +64,12 @@ export class ChatComponent implements OnInit, AfterViewInit {
   messageElements = viewChildren<ElementRef>('messageElement');
   destroyRef = inject(DestroyRef);
   routes = APP_ROUTES;
+
   chat: Chat;
   messages: Message[] = [];
   userId: string;
+  isUserOnline = false;
+
   inputMessage = '';
   chatId = '';
   initialScroll = true;
@@ -78,7 +81,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private messagesService: MessagesService,
     private chatService: ChatService,
-    private modalService: ModalService
+    private modalService: ModalService,
   ) {
     effect(() => {
       let scrolledId = localStorage.getItem(`chat-${this.chatId}`);
@@ -113,10 +116,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
     combineLatest([
       this.activatedRoute.params,
       this.chatService.chats$,
+      this.chatService.usersOnline$,
       this.messagesService.messagesMap$,
     ])
-      .pipe(distinctUntilChanged())
-      .subscribe(([routeParams, chats, messagesMap]) => {
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(([routeParams, chats, usersOnline, messagesMap]) => {
         if (this.chatId !== routeParams['chatId']) {
           this.initialScroll = true;
         }
@@ -126,6 +130,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
           this.messages = messagesMap[this.chatId];
         } else {
           this.messages = [];
+        }
+        if (this.chat?.user) {
+          this.isUserOnline = usersOnline.includes(this.chat.user._id);
         }
       });
 

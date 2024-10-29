@@ -14,6 +14,7 @@ const {
   USER_CONNECTED,
   USER_DISCONNECTED,
   USER_UPDATED,
+  CHAT_CREATED,
 } = SocketEvents;
 
 export interface Chat {
@@ -35,6 +36,10 @@ export class ChatService {
 
   public get chats$(): Observable<Chat[]> {
     return this._chats.asObservable();
+  }
+
+  public get usersOnline$(): Observable<string[]> {
+    return this._usersOnline.asObservable();
   }
 
   private get chats(): Chat[] {
@@ -141,9 +146,16 @@ export class ChatService {
       })
       .pipe(
         tap((chat) => {
-          this.chats = [...this.chats, chat].sort(
-            (a, b) => b.lastMessage.date - a.lastMessage.date,
-          );
+          this.chats = [
+            ...this.chats,
+            {
+              ...chat,
+              user: {
+                ...chat.user,
+                isOnline: this.usersOnline.includes(chat.user._id),
+              },
+            },
+          ].sort((a, b) => b.lastMessage?.date - a.lastMessage?.date);
         }),
       );
   }
@@ -164,6 +176,7 @@ export class ChatService {
     } else {
       this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
     }
+    socket.emit(CHAT_CREATED, { withUserId: user._id });
   }
 
   public updateUnreadCount(chatId: string, unreadCount: number) {

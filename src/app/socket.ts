@@ -12,6 +12,7 @@ export enum SocketEvents {
   CONNECT = 'connect',
   MESSAGE_READ = 'message read',
   USER_UPDATED = 'user updated',
+  CHAT_CREATED = 'chat created',
 };
 
 declare module 'socket.io-client' {

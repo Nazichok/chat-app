@@ -22,13 +22,13 @@
         <div class="flex flex-col justify-center">
           <h2>
             {{ chat.user.username }}
-            @if (chat.user.isOnline) {
+            @if (isUserOnline) {
               &nbsp;<i
                 class="flex items-center pi pi-circle-fill text-green-600 text-[8px]"
               ></i>
             }
           </h2>
-          @if (!chat.user.isOnline) {
+          @if (!isUserOnline) {
             <span class="text-slate-500 text-sm">{{
               chat.user.lastSeen && (chat.user.lastSeen | dateAgo | async)
             }}</span>
