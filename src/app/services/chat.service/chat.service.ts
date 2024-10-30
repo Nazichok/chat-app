@@ -172,11 +172,11 @@ export class ChatService {
       this.createChat(user).subscribe((chat) => {
         this._chats.next([...this._chats.value, { ...chat, user }]);
         this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
+        socket.emit(CHAT_CREATED, { chatId: chat._id, anotherUserId: user._id });
       });
     } else {
       this.router.navigate([`${APP_ROUTES.CHATS}/${chat._id}`]);
     }
-    socket.emit(CHAT_CREATED, { withUserId: user._id });
   }
 
   public updateUnreadCount(chatId: string, unreadCount: number) {

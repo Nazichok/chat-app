@@ -102,7 +102,7 @@ export class AppComponent implements OnInit, OnDestroy {
             const userId = user._id;
             socket.auth = {
               userId,
-              rooms: chats.map((chat) => chat.user._id),
+              rooms: chats.map((chat) => chat._id),
             };
             socket.connect();
 
