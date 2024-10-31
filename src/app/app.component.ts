@@ -128,7 +128,7 @@ export class AppComponent implements OnInit, OnDestroy {
           // @ts-ignore
           this.intervalId = setInterval(
             () => {
-              this.chatService.getChats().subscribe((chats) => {
+              this.chatService.getChats(true).subscribe((chats) => {
                 chats.forEach((chat) => {
                   this.messageService.getMessages(chat._id).subscribe();
                 });
