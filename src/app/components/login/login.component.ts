@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { AuthService } from '../../services/auth.service/auth.service';
 import { User, UserService } from '../../services/user.service/user.service';
 import {
@@ -18,6 +24,7 @@ import { Router, RouterLink } from '@angular/router';
 import { APP_ROUTES } from 'src/app/app.routes';
 import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 declare global {
   interface Window {
@@ -43,6 +50,7 @@ declare global {
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  destroyRef = inject(DestroyRef);
   loginForm: FormGroup = this.fb.group({
     username: [
       '',
@@ -63,11 +71,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.userService.user$.subscribe((user) => {
-      if (user) {
-        this.router.navigate([APP_ROUTES.CHATS]);
-      }
-    });
+    this.userService.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (user) {
+          this.router.navigate([APP_ROUTES.CHATS]);
+        }
+      });
 
     this.intervalId = setInterval(() => {
       if (window.google) {
@@ -119,7 +129,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   handleCredentialResponse(response: any) {
     this.authService.googleLogin(response.credential).subscribe({
-      next: (user: any) => {
+      next: (user: User) => {
         this.getUserFromBE(user);
       },
       error: (error) => {
