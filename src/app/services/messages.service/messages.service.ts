@@ -127,6 +127,7 @@ export class MessagesService {
       date,
       to: chat.user._id,
       sender,
+      senderName: this.userService.user?.username,
       chatId: chat._id,
       isRead: sameUser,
     });

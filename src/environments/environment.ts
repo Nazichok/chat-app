@@ -3,5 +3,6 @@ export const environment = {
   serverUrl: 'http://localhost:8080',
   localCryptoKey: 'some key',
   googleClientId:
-    'qweqweqwe'
+    'qweqweqwe',
+  vapidPublicKey: 'some vapid key'
 };

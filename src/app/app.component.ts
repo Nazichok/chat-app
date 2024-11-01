@@ -3,7 +3,7 @@ import { User, UserService } from './services/user.service/user.service';
 import { AuthService } from './services/auth.service/auth.service';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
-import { mergeMap, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { EventBusService } from '@services/bus-service.service';
 import { APP_ROUTES } from './app.routes';
 import { ButtonModule } from 'primeng/button';
@@ -19,6 +19,9 @@ import { RippleModule } from 'primeng/ripple';
 import { AvatarLetterPipe } from './pipes/avatar-letter.pipe';
 import { LoadingService } from '@services/loading.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SwPush } from '@angular/service-worker';
+import { PushNotificationsService } from '@services/push-notifications.service';
+import { environment } from 'src/environments/environment';
 
 const { CONNECT_ERROR } = SocketEvents;
 
@@ -52,6 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   items: MenuItem[] | undefined;
   intervalId: number;
+  pushNotificationsIntervalId: number;
 
   constructor(
     private userService: UserService,
@@ -63,6 +67,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: ModalService,
     private loadingService: LoadingService,
+    private swPush: SwPush,
+    private pushNotificationsService: PushNotificationsService,
   ) {}
 
   ngOnInit(): void {
@@ -137,6 +143,16 @@ export class AppComponent implements OnInit, OnDestroy {
             1000 * 60 * 5,
           );
         }
+        this.subscribeToNotifications();
+
+        // Ugly way to bypass push subscription expiration
+        // @ts-ignore
+        this.pushNotificationsIntervalId = setInterval(
+          () => {
+            this.subscribeToNotifications();
+          },
+          1000 * 60 * 15,
+        );
       } else {
         this.isLoggedIn = false;
         this.user = undefined;
@@ -152,6 +168,35 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
+  subscribeToNotifications() {
+    if (!this.swPush.isEnabled) {
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      return;
+    }
+
+    this.swPush
+      .requestSubscription({
+        serverPublicKey: environment.vapidPublicKey,
+      })
+      .then((sub) => {
+        if (!!navigator?.setAppBadge) {
+          this.chatService.chats$.subscribe((chats) => {
+            const unreadMessages = chats.reduce(
+              (acc, chat) => acc + (chat.unreadCount || 0),
+              0,
+            );
+            navigator.setAppBadge(unreadMessages);
+          });
+        }
+        this.pushNotificationsService.addPushSubscriber(sub).subscribe();
+      })
+      .catch((err) =>
+        console.error('Could not subscribe to notifications', err),
+      );
+  }
+
   openUserModal(): void {
     this.modalService.openProfileModal(this.userService.user!);
   }
@@ -160,12 +205,16 @@ export class AppComponent implements OnInit, OnDestroy {
     Object.values(SocketEvents).forEach((socketEvent) => {
       socket.off(socketEvent);
     });
+
+    this.eventBusSub?.unsubscribe();
   }
 
   logout(): void {
     clearInterval(this.intervalId);
+    clearInterval(this.pushNotificationsIntervalId);
     this.authService.logout().subscribe(() => {
       this.userService.clean();
+      this.swPush.unsubscribe();
       socket.disconnect();
       this.router.navigate([APP_ROUTES.LOGIN]);
     });

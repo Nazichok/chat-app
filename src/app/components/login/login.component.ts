@@ -19,7 +19,11 @@ import { APP_ROUTES } from 'src/app/app.routes';
 import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-declare const google: any;
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 @Component({
   selector: 'app-login',
@@ -66,7 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
 
     this.intervalId = setInterval(() => {
-      if (google) {
+      if (window.google) {
         clearInterval(this.intervalId);
         this.initializeGoogleSignIn();
       }
@@ -95,14 +99,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   initializeGoogleSignIn() {
-    google.accounts.id.initialize({
+    window.google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: this.handleCredentialResponse.bind(this),
       context: 'use',
       use_fedcm_for_prompt: true,
     });
 
-    google.accounts.id.renderButton(
+    window.google.accounts.id.renderButton(
       // @ts-ignore
       document.getElementById('google-signin-button'),
       { theme: 'outline', size: 'medium' },
@@ -110,7 +114,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   triggerGoogleSignIn() {
-    google.accounts.id.prompt();
+    window.google.accounts.id.prompt();
   }
 
   handleCredentialResponse(response: any) {
