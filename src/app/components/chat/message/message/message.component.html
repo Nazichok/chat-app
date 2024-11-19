@@ -1,6 +1,8 @@
-<p class="whitespace-pre-wrap break-all">{{ message.text }}</p>
-<span
-  class="text-sm float-end"
-  [ngClass]="message.sender === userId ? 'text-slate-200' : 'text-slate-500'"
-  >{{ message.date | dateAgo | async }}</span
->
+@if (message) {
+  <p class="whitespace-pre-wrap break-all">{{ message.text }}</p>
+  <span
+    class="text-sm float-end"
+    [ngClass]="message.sender === userId ? 'text-slate-200' : 'text-slate-500'"
+    >{{ message.date | dateAgo | async }}</span
+  >
+}

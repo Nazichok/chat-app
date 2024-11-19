@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MessagesServiceService } from './messages.service';
+import { MessagesService } from './messages.service';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('MessagesServiceService', () => {
-  let service: MessagesServiceService;
+  let service: MessagesService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MessagesServiceService);
+    TestBed.configureTestingModule({
+      providers: [MessagesService, provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(MessagesService);
   });
 
   it('should be created', () => {

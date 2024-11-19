@@ -19,6 +19,9 @@ export class MessageComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    if (!this.message) {
+      return;
+    }
     if (!this.message.isRead && this.message.sender !== this.userId) {
       this.messagesService.messageRead(this.message);
     }

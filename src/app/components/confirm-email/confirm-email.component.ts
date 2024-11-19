@@ -19,14 +19,14 @@ export class ConfirmEmailComponent implements OnInit {
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private authServvice: AuthService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     const token = this.activeRoute.snapshot.queryParams['token'];
     const userId = this.activeRoute.snapshot.queryParams['id'];
 
-    this.authServvice.confirmEmail(token, userId).subscribe(() => {
+    this.authService.confirmEmail(token, userId).subscribe(() => {
       this.isConfirmed = true;
     });
   }
