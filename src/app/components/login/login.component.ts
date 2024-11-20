@@ -128,6 +128,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   handleCredentialResponse(response: any) {
+    if (!response?.credential) return;
     this.authService.googleLogin(response.credential).subscribe({
       next: (user: User) => {
         this.getUserFromBE(user);

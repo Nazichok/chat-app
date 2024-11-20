@@ -2,7 +2,6 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  contentChildren,
   DestroyRef,
   effect,
   ElementRef,
@@ -143,6 +142,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (!this.messagesContainer) {
+      return;
+    }
     fromEvent<Event>(this.messagesContainer.nativeElement, 'scroll')
       .pipe(
         filter(() => !this.scrolling && !this.initialScroll),

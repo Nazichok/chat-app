@@ -172,29 +172,31 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!this.swPush.isEnabled) {
       return;
     }
-    if (Notification.permission === 'denied') {
-      return;
-    }
+    Notification.requestPermission().then((res) => {
+      if (res === 'denied') {
+        return;
+      }
 
-    this.swPush
-      .requestSubscription({
-        serverPublicKey: environment.vapidPublicKey,
-      })
-      .then((sub) => {
-        if (!!navigator?.setAppBadge) {
-          this.chatService.chats$.subscribe((chats) => {
-            const unreadMessages = chats.reduce(
-              (acc, chat) => acc + (chat.unreadCount || 0),
-              0,
-            );
-            navigator.setAppBadge(unreadMessages);
-          });
-        }
-        this.pushNotificationsService.addPushSubscriber(sub).subscribe();
-      })
-      .catch((err) =>
-        console.error('Could not subscribe to notifications', err),
-      );
+      this.swPush
+        .requestSubscription({
+          serverPublicKey: environment.vapidPublicKey,
+        })
+        .then((sub) => {
+          if (!!navigator?.setAppBadge) {
+            this.chatService.chats$.subscribe((chats) => {
+              const unreadMessages = chats.reduce(
+                (acc, chat) => acc + (chat.unreadCount || 0),
+                0,
+              );
+              navigator.setAppBadge(unreadMessages);
+            });
+          }
+          this.pushNotificationsService.addPushSubscriber(sub).subscribe();
+        })
+        .catch((err) =>
+          console.error('Could not subscribe to notifications', err),
+        );
+    });
   }
 
   openUserModal(): void {

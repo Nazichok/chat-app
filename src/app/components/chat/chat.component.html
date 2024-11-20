@@ -44,7 +44,7 @@
       />
     }
   </div>
-  <div #messagesContainer class="flex-1 overflow-auto pr-3 bg-indigo-100">
+  <div #messagesContainer class="messages-container flex-1 overflow-auto pr-3 bg-indigo-100">
     <ul class="p-3 w-full">
       @for (message of messages; track message._id) {
         <li

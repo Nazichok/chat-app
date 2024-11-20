@@ -31,14 +31,20 @@ export class MessagesService {
     return this._messagesMap.value;
   }
 
+  private set messagesMap(value: Record<string, Message[]>) {
+    this._messagesMap.next(value);
+  }
+
   private updateMap(chatId: string, messages: Message[]) {
-    this._messagesMap.next({
-      ...this._messagesMap.value,
-      [chatId]: messages,
-    });
+    if (messages) {
+      this._messagesMap.next({
+        ...this._messagesMap.value,
+        [chatId]: messages || [],
+      });
+    }
     this.chatService.updateUnreadCount(
       chatId,
-      messages.filter(
+      (messages || []).filter(
         (m) => m.sender !== this.userService.user?._id && !m.isRead,
       ).length,
     );
@@ -78,6 +84,7 @@ export class MessagesService {
   }
 
   public messageRead(message: Message) {
+    console.log('socket.emit is being called');
     socket.emit(MESSAGE_READ, {
       chatId: message.chatId,
       messageId: message._id,
@@ -85,7 +92,7 @@ export class MessagesService {
     });
     this.updateMap(
       message.chatId,
-      this.messagesMap[message.chatId].map((m) => {
+      this.messagesMap[message.chatId]?.map((m) => {
         if (m._id === message._id) {
           return { ...m, isRead: true };
         }

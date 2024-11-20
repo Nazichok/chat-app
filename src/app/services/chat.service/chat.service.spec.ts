@@ -6,52 +6,7 @@ import {
 import { Chat, ChatService } from './chat.service';
 import { provideHttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-
-const chats: Chat[] = [
-  {
-    _id: '1',
-    user: { _id: '1', username: 'John Doe', email: '', img: '' },
-    lastMessage: {
-      _id: '1',
-      chatId: '1',
-      sender: '1',
-      text: 'Hello',
-      isRead: false,
-      date: new Date().getTime(),
-    },
-    unreadCount: 0,
-  },
-  {
-    _id: '2',
-    user: { _id: '2', username: 'Jane Doe', email: '', img: '' },
-    lastMessage: {
-      _id: '2',
-      chatId: '2',
-      sender: '2',
-      text: 'Hello',
-      isRead: false,
-      date: new Date().getTime(),
-    },
-    unreadCount: 0,
-  },
-];
-
-const user = { _id: '1', username: 'John Doe', email: '', img: '' };
-const chatId = '1';
-const chat = {
-  _id: '1',
-  user: { _id: '1', username: 'John Doe', email: '', img: '' },
-  lastMessage: {
-    _id: '1',
-    chatId: '1',
-    sender: '1',
-    text: 'Hello',
-    isRead: false,
-    date: new Date().getTime(),
-  },
-  unreadCount: 0,
-};
-const users = [{ _id: '1', username: 'John Doe', email: '', img: '' }];
+import { chat, chatId, chats, user, users } from 'src/app/helpers/test.constants';
 
 describe('ChatService', () => {
   let service: ChatService;
