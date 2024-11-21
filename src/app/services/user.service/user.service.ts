@@ -7,8 +7,8 @@ import socket from 'src/app/socket';
 import { SocketEvents } from 'src/app/socket';
 
 const { CONNECT, DISCONNECT, USER_UPDATED } = SocketEvents;
-const USER_KEY = 'auth-user';
-const API_URL = `${environment.serverUrl}/api/user`;
+export const API_URL = `${environment.serverUrl}/api/user`;
+export const USER_KEY = 'auth-user';
 
 export interface User {
   _id: string;
@@ -49,7 +49,14 @@ export class UserService {
     return this._user.value;
   }
 
+  public set user(user: User | null) {
+    this._user.next(user);
+  }
+
   public set isOnline(newIsOnline: boolean) {
+    if (this._isOnline.value === newIsOnline) {
+      return;
+    }
     this._isOnline.next(newIsOnline);
   }
 
@@ -65,23 +72,34 @@ export class UserService {
   initUser(): void {
     const user = window.localStorage.getItem(USER_KEY);
     if (user) {
-      const data = crypto.AES.decrypt(
-        user,
-        environment.localCryptoKey,
-      ).toString(crypto.enc.Utf8);
-      this._user.next(JSON.parse(data));
+      try {
+
+        const data = crypto.AES.decrypt(
+          user,
+          environment.localCryptoKey,
+        ).toString(crypto.enc.Utf8);
+        this._user.next(JSON.parse(data));
+      } catch (error) {
+        console.error(error);
+        this.clean();
+      }
     }
   }
 
   public saveUser(user: User): void {
     window.localStorage.removeItem(USER_KEY);
     const userString = JSON.stringify(user);
-    const data = crypto.AES.encrypt(
-      userString,
-      environment.localCryptoKey,
-    ).toString();
-    window.localStorage.setItem(USER_KEY, data);
-    this._user.next(user);
+    try {
+      const data = crypto.AES.encrypt(
+        userString,
+        environment.localCryptoKey,
+      ).toString();
+      window.localStorage.setItem(USER_KEY, data);
+      this._user.next(user);
+    } catch (error) {
+      console.error('error', error);
+      this.clean();
+    }
   }
 
   public updateUser(fields: Partial<User>): Observable<User> {

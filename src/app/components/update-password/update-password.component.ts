@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessagesModule } from 'primeng/messages';
 import { PasswordModule } from 'primeng/password';
-import { finalize } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
@@ -65,7 +65,7 @@ export class UpdatePasswordComponent {
         oldPassword: this.updatePasswordForm.value.oldPassword,
         newPassword: this.updatePasswordForm.value.newPassword,
       })
-      .pipe(finalize(() => (this.loading = false)))
+      .pipe(finalize(() => (this.loading = false)), catchError(() => of(null)))
       .subscribe(() => {
         this.isSuccessful = true;
       });

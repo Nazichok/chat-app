@@ -84,7 +84,6 @@ export class MessagesService {
   }
 
   public messageRead(message: Message) {
-    console.log('socket.emit is being called');
     socket.emit(MESSAGE_READ, {
       chatId: message.chatId,
       messageId: message._id,
