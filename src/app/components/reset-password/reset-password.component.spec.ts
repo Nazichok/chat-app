@@ -128,6 +128,6 @@ describe('ResetPasswordComponent', () => {
     component.onSubmit();
     fixture.detectChanges();
     expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
-    expect(routerSpy.navigate.calls.allArgs()[0][0]).toEqual(['/', 'login']);
+    expect(routerSpy.navigate.calls.allArgs()[0][0]).toEqual(['login']);
   });
 });

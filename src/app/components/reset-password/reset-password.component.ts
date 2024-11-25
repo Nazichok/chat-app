@@ -13,6 +13,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { finalize } from 'rxjs';
+import { APP_ROUTES } from 'src/app/app.routes';
 
 @Component({
   selector: 'app-reset-password',
@@ -69,7 +70,7 @@ export class ResetPasswordComponent {
             summary: 'Success',
             detail: 'Your password has been changed successfully!',
           });
-          this.router.navigate(['/', 'login']);
+          this.router.navigate([APP_ROUTES.LOGIN]);
         });
     }
   }

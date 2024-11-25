@@ -43,6 +43,9 @@ export class ForgotPasswordComponent {
 
   onSubmit(): void {
     const { email } = this.forgotPasswordForm.value;
+
+    if (!email) return;
+
     this.loading = true;
     this.authService.resetPasswordRequest(email).pipe(finalize(() => (this.loading = false))).subscribe(() => {
       this.toastModule.add({

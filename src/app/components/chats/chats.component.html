@@ -40,7 +40,7 @@
         [ngClass]="searchLoading ? 'pi-spin pi-spinner' : 'pi-search'"
       ></i>
     </div>
-    <ul>
+    <ul data-chats-container>
       <li *ngFor="let chat of chats" class="mb-4">
         <p-card
           class="[&_.p-card-content]:p-0 hover:[&_.p-card]:bg-slate-100 cursor-pointer"
