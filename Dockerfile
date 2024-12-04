@@ -1,12 +1,20 @@
-FROM node:lts-alpine AS builder
+FROM node:alpine as builder
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY . /usr/src/app
 
-RUN npm ci
+RUN npm install -g @angular/cli
 
-COPY . .
+RUN npm install
+
+FROM builder AS dev
+
+EXPOSE 4200
+
+CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "500"]
+
+FROM builder AS prod
 
 RUN npm run build
 
