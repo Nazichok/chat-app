@@ -5,7 +5,7 @@ orbs:
   node: circleci/node@5
   browser-tools: circleci/browser-tools@1.4.9
 jobs:
-  install-browser:
+  test:
     docker:
       - image: cimg/node:20.4.0-browsers
     steps:
@@ -17,9 +17,6 @@ jobs:
             chromedriver --version
             which google-chrome
           name: Check install
-  test-node:
-    executor: node/default
-    steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
@@ -37,14 +34,11 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - install-browser
-      - test-node:
-          requires:
-            - install-browser
+      - test
       - deploy:
           filters:
             branches:
               only:
                 - master
           requires:
-            - test-node
+            - test
