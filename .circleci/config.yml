@@ -40,5 +40,9 @@ workflows:
     jobs:
       - test-node
       - deploy:
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - test-node
