@@ -22,17 +22,17 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
       - run:
           name: deploy
-          command: '#e.g. ./deploy.sh'
+          command: curl ${RENDER_COM_DEPLOY_URL}
 workflows:
   build-and-test:
     jobs:
       - test-node
-      - build-node:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - test-node
-    # - deploy:
-    #     requires:
-    #       - build-node
