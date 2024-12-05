@@ -24,7 +24,7 @@ jobs:
           pkg-manager: npm
       - run:
           name: Run tests
-          command: npm test --passWithNoTests
+          command: CHROME_BIN=/usr/bin/google-chrome npm test --passWithNoTests
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
