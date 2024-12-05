@@ -36,6 +36,7 @@ jobs:
 workflows:
   build-and-test:
     jobs:
+      - install-browser
       - test-node:
           requires:
             - install-browser
