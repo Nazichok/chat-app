@@ -15,6 +15,7 @@ jobs:
           command: |
             google-chrome --version
             chromedriver --version
+            which google-chrome
           name: Check install
   test-node:
     executor: node/default
